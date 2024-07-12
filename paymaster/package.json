@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.141",
+    "esbuild": "^0.23.0"
+  }
+}
