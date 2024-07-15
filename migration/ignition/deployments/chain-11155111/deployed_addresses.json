@@ -1,0 +1,7 @@
+{
+  "XdefiTestERC20Module#XdefiTestERC20": "0x46b01429E0B31e37De7Cdac24071cB94E6de43a6",
+  "CtrlTestERC20Module#CtrlTestERC20": "0xF4a2c191Da5A3D173F36c27626C4397A94b7e50a",
+  "XdefiToCtrlMigrationModule#CtrlTestERC20": "0xF4a2c191Da5A3D173F36c27626C4397A94b7e50a",
+  "XdefiToCtrlMigrationModule#XdefiTestERC20": "0x46b01429E0B31e37De7Cdac24071cB94E6de43a6",
+  "XdefiToCtrlMigrationModule#XdefiToCtrlMigration": "0x41Fced33a6e8F2aD87A4Bd827605B7b64237C261"
+}
