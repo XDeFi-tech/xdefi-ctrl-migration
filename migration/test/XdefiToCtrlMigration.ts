@@ -1,10 +1,29 @@
 import hre from "hardhat";
 import {loadFixture} from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import {expect} from "chai";
+import * as path from "node:path";
+import {AbiCoder, ethers, getBytes, keccak256, recoverAddress, solidityPacked, toUtf8Bytes} from "ethers";
 
 
-const types = {
-    Permit: [
+const EIP712Domain = [
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "version",
+            "type": "string"
+        },
+        {
+            "name": "chainId",
+            "type": "uint256"
+        },
+        {
+            "name": "verifyingContract",
+            "type": "address"
+        }
+    ];
+const Permit = [
         {
             name: "owner",
             type: "address",
@@ -25,14 +44,74 @@ const types = {
             name: "deadline",
             type: "uint256",
         },
-    ],
-};
+    ];
+
+// const PERMIT_SIGNATURE_HASH =
+//   "0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9";
+const PERMIT_SIGNATURE_HASH = keccak256(
+  toUtf8Bytes(
+    "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)",
+  ),
+);
+// Approval digest generation function, it uses the keccak256 hash function
+export async function getApprovalDigest(
+  DOMAIN_SEPARATOR: string,
+  approve: {
+    owner: string;
+    spender: string;
+    value: bigint;
+  },
+  deadline: bigint,
+  nonce: bigint,
+): Promise<string> {
+  return keccak256(
+    solidityPacked(
+      ["bytes1", "bytes1", "bytes32", "bytes32"],
+      [
+        "0x19",
+        "0x01",
+        DOMAIN_SEPARATOR,
+        keccak256(
+          AbiCoder.defaultAbiCoder().encode(
+            ["bytes32", "address", "address", "uint256", "uint256", "uint256"],
+            [
+              PERMIT_SIGNATURE_HASH,
+              approve.owner,
+              approve.spender,
+              approve.value,
+              nonce,
+              deadline,
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
+async function verifyPermit({ data, sig }, DOMAIN_SEPARATOR) {
+
+  const digest = await getApprovalDigest(
+    DOMAIN_SEPARATOR,
+    { owner: data.owner, spender: data.spender, value: data.value },
+    data.deadline,
+    BigInt(data.nonce),
+  );
+
+  const recoveredAddress = recoverAddress(getBytes(digest), sig);
+    console.log({ recoveredAddress, owner: data.owner });
+    return recoveredAddress === data.owner;
+}
+
 
 
 describe("XdefiToCtrlMigration", function () {
     async function deployXdefiToCtrlMigrationFixture() {
         // Contracts are deployed using the first signer/account by default
         const [creator, addressOne, addressTwo] = await hre.ethers.getSigners();
+
+        console.log(`Creator: ${await creator.getAddress()}\nAddressOne: ${await addressOne.getAddress()}\nAddressTwo: ${await addressTwo.getAddress()}`);
 
         const XdefiTestERC20 = await hre.ethers.getContractFactory("XdefiTestERC20", creator);
         const xdefi = await XdefiTestERC20.deploy(
@@ -75,28 +154,54 @@ describe("XdefiToCtrlMigration", function () {
             const balanceOfCreator = await xdefi.balanceOf(await creator.getAddress());
             const balanceOfAddressOne = await xdefi.balanceOf(await addressOne.getAddress());
 
+            const owner = await addressOne.getAddress();
+            const spender = await creator.getAddress();
+            const tokenAddress = await xdefi.getAddress();
+            const name = await xdefi.name();
+            const nonce = await xdefi.nonces(owner);
+
+
             // Sign the message
             const domain = {
-                chainId: 31337,
-                verifyingContract: await xdefi.getAddress() as `0x${string}`,
-            }
+                name: name,
+                version: "1",
+                chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+                verifyingContract: tokenAddress as `0x${string}`,
+            } as const;
 
-            console.log(`Domain: ${JSON.stringify(domain)}`);
+            console.log({domain});
 
             const message = {
-                owner: await addressOne.getAddress(),
-                spender: await creator.getAddress(),
-                value: BigInt(10 * 1e18),
-                nonce: await creator.getNonce(),
+                owner,
+                spender,
+                value: 500,
+                nonce: Number(nonce) + 1,
                 deadline: Math.floor(Date.now() / 1000) + 60 * 10,
             }
 
-            console.log(`Message: ${JSON.stringify(message, (key, value) => typeof value === 'bigint' ? value.toString() : value)}`);
+            console.log({message});
 
 
-            const sig = await addressOne.signTypedData(domain, types, message);
+            // const sig = await hre.ethers.provider.send("eth_signTypedData_v4", [
+            //     owner,
+            //     JSON.stringify({
+            //         types,
+            //         primaryType: "Permit",
+            //         domain,
+            //         message,
+            //     }),
+            // ]);
+            const sig = await addressOne.signTypedData(domain, { Permit }, message);
 
             console.log(`Signature: ${sig}`);
+
+
+            if (await verifyPermit({
+                data: message,
+                sig,
+            }, await xdefi.DOMAIN_SEPARATOR())) {
+                console.log("Signature is valid");
+            }
 
             const { v, r, s } = hre.ethers.Signature.from(sig);
 
