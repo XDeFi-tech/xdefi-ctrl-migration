@@ -68,6 +68,22 @@ contract XdefiToCtrlMigration is Ownable {
         emit Migrated(msg.sender, xdefiAmount);
     }
 
+    function migrateGaslessFromVXDEFI(address user, uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+        // Approve vXDEFI with EIP-2612 on behalf of the user
+        IERC20Permit(address(poolToken)).permit(user, address(this), shares, deadline, v, r, s);
+
+        // Transfer vXDEFI tokens from the user to this contract
+        poolToken.transferFrom(user, address(this), shares);
+
+        // Redeem vXDEFI for XDEFI
+        uint256 xdefiAmount = poolToken.redeem(shares, address(this), address(this));
+
+        // Transfer new tokens to the user
+        newToken.safeTransfer(user, xdefiAmount);
+
+        emit Migrated(user, xdefiAmount);
+    }
+
     function withdrawOldTokens(uint256 amount) external onlyOwner {
         oldToken.safeTransfer(msg.sender, amount);
     }
