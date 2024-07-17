@@ -42,42 +42,40 @@ describe("XdefiToCtrlMigration", function () {
     return { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo };
   }
 
-  describe("Migrate", function () {
+  describe("Deployment", function () {
+    it("Should deploy the XdefiToCtrlMigration contract", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await creator.getAddress();
+
+      expect(await tokenMigration.owner()).to.equal(owner);
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(500 * 1e18));
+      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(500 * 1e18));
+    });
+  });
+
+  describe("Migrate With Gas-less Approval", function () {
     it("Should migrate xdefi to ctrl", async function () {
       const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
         await loadFixture(deployXdefiToCtrlMigrationFixture);
 
-      // Move 10 xdefi to addressOne
-      const amount = BigInt(10 * 1e18);
-      const resTransfer = await xdefi.transfer(
-        await addressOne.getAddress(),
-        amount
-      );
-      console.log(
-        `Transfer xdefi to addressOne: ${await addressOne.getAddress()} amount: ${amount} txHash: ${
-          resTransfer.hash
-        }`
-      );
-
-      // Move 250 Ctrl to tokenMigration
-      const amountCtrl = BigInt(250 * 1e18);
-      const resTransferCtrl = await ctrl.transfer(
-        await tokenMigration.getAddress(),
-        amountCtrl
-      );
-      console.log(
-        `Transfer Ctrl to tokenMigration: ${await tokenMigration.getAddress()} amount: ${amountCtrl} txHash: ${
-          resTransferCtrl.hash
-        }`
-      );
-
       const owner = await addressOne.getAddress();
       const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
       const tokenAddress = await xdefi.getAddress();
       const nonce = await xdefi.nonces(owner);
 
-      const balanceOfSpender = await xdefi.balanceOf(spender);
-      const balanceOfOwner = await xdefi.balanceOf(owner);
+      const initialBalanceOfSpender = await xdefi.balanceOf(spender);
+      const initialBalanceOfOwner = await xdefi.balanceOf(owner);
 
       // domain separator for xdefi token
       const domain = {
@@ -97,23 +95,21 @@ describe("XdefiToCtrlMigration", function () {
       const { v, r, s } = hre.ethers.Signature.from(sig);
 
       // Migrate xdefi to ctrl
-      const resMigration = await tokenMigration.migrateWithGaslessApproval(
+      await tokenMigration.migrateWithGaslessApproval(
         message.owner,
         message.value,
-        BigInt(message.deadline),
+        message.deadline,
         v,
         r,
         s
       );
 
-      console.log(`Migrate xdefi to ctrl txHash: ${resMigration.hash}`);
-
       expect(await xdefi.balanceOf(owner)).to.equal(
-        balanceOfOwner - BigInt(10 * 1e18)
+        initialBalanceOfOwner - BigInt(10 * 1e18)
       );
       expect(await ctrl.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
       expect(await xdefi.balanceOf(spender)).to.equal(
-        balanceOfSpender + BigInt(10 * 1e18)
+        initialBalanceOfSpender + BigInt(10 * 1e18)
       );
     });
 
@@ -121,32 +117,17 @@ describe("XdefiToCtrlMigration", function () {
       const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
         await loadFixture(deployXdefiToCtrlMigrationFixture);
 
-      // Move 10 xdefi to addressOne
-      const amount = BigInt(10 * 1e18);
-      const resTransfer = await xdefi.transfer(
-        await addressOne.getAddress(),
-        amount
-      );
-      console.log(
-        `Transfer xdefi to addressOne: ${await addressOne.getAddress()} amount: ${amount} txHash: ${
-          resTransfer.hash
-        }`
-      );
-
-      // Move 250 Ctrl to tokenMigration
-      const amountCtrl = BigInt(250 * 1e18);
-      const resTransferCtrl = await ctrl.transfer(
-        await tokenMigration.getAddress(),
-        amountCtrl
-      );
-      console.log(
-        `Transfer Ctrl to tokenMigration: ${await tokenMigration.getAddress()} amount: ${amountCtrl} txHash: ${
-          resTransferCtrl.hash
-        }`
-      );
-
       const owner = await addressOne.getAddress();
       const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
       const tokenAddress = await xdefi.getAddress();
       const nonce = await xdefi.nonces(owner);
 
@@ -176,7 +157,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration.migrateWithGaslessApproval(
           message.owner,
           message.value,
-          BigInt(message.deadline),
+          message.deadline,
           v,
           r,
           s
@@ -196,20 +177,270 @@ describe("XdefiToCtrlMigration", function () {
       const spender = await tokenMigration.getAddress();
 
       // Move 10 xdefi to addressOne
-      const resTransfer = await xdefi.transfer(owner, BigInt(10 * 1e18));
-      console.log(
-        `Transfer xdefi to addressOne: ${owner} amount: ${BigInt(
-          10 * 1e18
-        )} txHash: ${resTransfer.hash}`
-      );
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
 
       // Move 250 Ctrl to tokenMigration
-      const resTransferCtrl = await ctrl.transfer(spender, BigInt(250 * 1e18));
-      console.log(
-        `Transfer Ctrl to tokenMigration: ${spender} amount: ${BigInt(
-          250 * 1e18
-        )} txHash: ${resTransferCtrl.hash}`
-      );
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(5 * 1e18),
+        nonce: Number(nonce) + 1, // Enter an invalid nonce
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl with invalid nonce
+      await expect(
+        tokenMigration.migrateWithGaslessApproval(
+          message.owner,
+          message.value,
+          message.deadline,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWith("ERC20: Invalid Signature");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if signature is invalid", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl with invalid signature
+      await expect(
+        tokenMigration.migrateWithGaslessApproval(
+          message.owner,
+          BigInt(5 * 1e18), // Enter a different value to make the signature invalid
+          message.deadline,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWith("ERC20: Invalid Signature");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if owner is not the signer", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressTwo.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl with invalid signature
+      await expect(
+        tokenMigration.migrateWithGaslessApproval(
+          message.owner,
+          message.value,
+          message.deadline,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWith("ERC20: Invalid Signature");
+    });
+
+    it("Should not migrate xdefi to ctrl if owner [xdefi] balance is insufficient", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await xdefi.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl with insufficient balance
+      await expect(
+        tokenMigration.migrateWithGaslessApproval(
+          message.owner,
+          message.value,
+          message.deadline,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if spender [ctrl] balance is insufficient", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl with insufficient balance
+      await expect(
+        tokenMigration.migrateWithGaslessApproval(
+          message.owner,
+          message.value,
+          message.deadline,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWithCustomError(ctrl, "ERC20InsufficientBalance");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+  });
+
+  describe("Migrate With Approval", function () {
+    it("should migrate xdefi to ctrl", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
 
       const tokenAddress = await xdefi.getAddress();
       const nonce = await xdefi.nonces(owner);
@@ -234,31 +465,428 @@ describe("XdefiToCtrlMigration", function () {
       const sig = await addressOne.signTypedData(domain, { Permit }, message);
       const { v, r, s } = hre.ethers.Signature.from(sig);
 
-      const transfer = await tokenMigration.migrateWithGaslessApproval(
-        message.owner,
-        message.value,
-        BigInt(message.deadline),
-        v,
-        r,
-        s
-      );
-      console.log(`Migrate xdefi to ctrl txHash: ${transfer.hash}`);
+      // Migrate xdefi to ctrl
+      await tokenMigration
+        .connect(addressOne)
+        .migrate(message.value, message.deadline, v, r, s);
 
-      // Migrate xdefi to ctrl with invalid nonce
+      expect(await xdefi.balanceOf(owner)).to.equal(
+        balanceOfOwner - BigInt(10 * 1e18)
+      );
+      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(spender)).to.equal(
+        balanceOfSpender + BigInt(10 * 1e18)
+      );
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(240 * 1e18));
+    });
+
+    it("Should not migrate xdefi to ctrl if deadline is expired", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await xdefi.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) - 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
       await expect(
-        tokenMigration.migrateWithGaslessApproval(
-          message.owner,
-          message.value,
-          BigInt(message.deadline),
+        tokenMigration
+          .connect(addressOne)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("ERC20: Expired");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if nonce is invalid", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce) + 1, // Enter an invalid nonce
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
+      await expect(
+        tokenMigration
+          .connect(addressOne)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("ERC20: Invalid Signature");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if signature is invalid", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
+      await expect(
+        tokenMigration.connect(addressOne).migrate(
+          BigInt(5 * 1e18), // Enter a different value to make the signature invalid
+          message.deadline,
           v,
           r,
           s
         )
       ).to.be.revertedWith("ERC20: Invalid Signature");
 
-      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(0));
-      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
-      expect(await xdefi.balanceOf(spender)).to.equal(BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if owner is not the signer", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      // Move 250 Ctrl to tokenMigration
+      await ctrl.transfer(spender, BigInt(250 * 1e18));
+      expect(await ctrl.balanceOf(spender)).to.equal(BigInt(250 * 1e18));
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressTwo.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
+      await expect(
+        tokenMigration
+          .connect(addressOne)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("ERC20: Invalid Signature");
+    });
+
+    it("Should not migrate xdefi to ctrl if owner [xdefi] balance is insufficient", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      const balanceOfSpender = await xdefi.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
+      await expect(
+        tokenMigration
+          .connect(addressOne)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await xdefi.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+
+    it("Should not migrate xdefi to ctrl if spender [ctrl] balance is insufficient", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await addressOne.getAddress();
+      const spender = await tokenMigration.getAddress();
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(owner);
+
+      // Move 10 xdefi to addressOne
+      await xdefi.transfer(owner, BigInt(10 * 1e18));
+      expect(await xdefi.balanceOf(owner)).to.equal(BigInt(10 * 1e18));
+
+      const balanceOfSpender = await ctrl.balanceOf(spender);
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      } as const;
+      // prepare the message for the permit
+      const message = {
+        owner,
+        spender,
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: Math.floor(Date.now() / 1000) + 60 * 10,
+      };
+      // Sign the message
+      const sig = await addressOne.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate xdefi to ctrl
+      await expect(
+        tokenMigration
+          .connect(addressOne)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWithCustomError(ctrl, "ERC20InsufficientBalance");
+
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(owner)).to.equal(0);
+      expect(await ctrl.balanceOf(spender)).to.equal(balanceOfSpender);
+    });
+  });
+
+  describe("Withdraw [xdefi] ERC20 Tokens", function () {
+    it("Should withdraw xdefi tokens", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await creator.getAddress();
+      const migrationContract = await tokenMigration.getAddress();
+
+      // Move 30 Xdefi to tokenMigration
+      await xdefi.transfer(migrationContract, BigInt(30 * 1e18));
+      expect(await xdefi.balanceOf(migrationContract)).to.equal(
+        BigInt(30 * 1e18)
+      );
+
+      const balanceOfCreator = await xdefi.balanceOf(owner);
+      const balanceOfMigrationContract = await xdefi.balanceOf(
+        migrationContract
+      );
+
+      // Withdraw xdefi tokens
+      await tokenMigration.withdrawOldTokens(BigInt(10 * 1e18));
+
+      expect(await xdefi.balanceOf(owner)).to.equal(
+        balanceOfCreator + BigInt(10 * 1e18)
+      );
+      expect(await xdefi.balanceOf(migrationContract)).to.equal(
+        balanceOfMigrationContract - BigInt(10 * 1e18)
+      );
+    });
+
+    it("Should not withdraw xdefi tokens if caller is not the owner", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await creator.getAddress();
+      const migrationContract = await tokenMigration.getAddress();
+
+      // Move 30 Xdefi to tokenMigration
+      await xdefi.transfer(migrationContract, BigInt(30 * 1e18));
+      expect(await xdefi.balanceOf(migrationContract)).to.equal(
+        BigInt(30 * 1e18)
+      );
+
+      const balanceOfOwner = await xdefi.balanceOf(owner);
+      const balanceOfMigrationContract = await xdefi.balanceOf(
+        migrationContract
+      );
+
+      // Withdraw xdefi tokens
+      await expect(
+        tokenMigration.connect(addressOne).withdrawOldTokens(BigInt(10 * 1e18))
+      ).to.be.revertedWithCustomError(
+        tokenMigration,
+        "OwnableUnauthorizedAccount"
+      );
+      expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await xdefi.balanceOf(migrationContract)).to.equal(
+        balanceOfMigrationContract
+      );
+    });
+  });
+
+  describe("Withdraw [ctrl] ERC20 Tokens", function () {
+    it("Should withdraw ctrl tokens", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await creator.getAddress();
+      const migrationContract = await tokenMigration.getAddress();
+
+      // Move 30 Ctrl to tokenMigration
+      await ctrl.transfer(migrationContract, BigInt(30 * 1e18));
+      expect(await ctrl.balanceOf(migrationContract)).to.equal(
+        BigInt(30 * 1e18)
+      );
+
+      const balanceOfCreator = await ctrl.balanceOf(owner);
+      const balanceOfMigrationContract = await ctrl.balanceOf(
+        migrationContract
+      );
+
+      // Withdraw ctrl tokens
+      await tokenMigration.withdrawNewTokens(BigInt(10 * 1e18));
+
+      expect(await ctrl.balanceOf(owner)).to.equal(
+        balanceOfCreator + BigInt(10 * 1e18)
+      );
+      expect(await ctrl.balanceOf(migrationContract)).to.equal(
+        balanceOfMigrationContract - BigInt(10 * 1e18)
+      );
+    });
+
+    it("Should not withdraw ctrl tokens if caller is not the owner", async function () {
+      const { tokenMigration, xdefi, ctrl, creator, addressOne, addressTwo } =
+        await loadFixture(deployXdefiToCtrlMigrationFixture);
+
+      const owner = await creator.getAddress();
+      const migrationContract = await tokenMigration.getAddress();
+
+      // Move 30 Ctrl to tokenMigration
+      await ctrl.transfer(migrationContract, BigInt(30 * 1e18));
+      expect(await ctrl.balanceOf(migrationContract)).to.equal(
+        BigInt(30 * 1e18)
+      );
+
+      const balanceOfOwner = await ctrl.balanceOf(owner);
+      const balanceOfMigrationContract = await ctrl.balanceOf(
+        migrationContract
+      );
+
+      // Withdraw ctrl tokens
+      await expect(
+        tokenMigration.connect(addressOne).withdrawNewTokens(BigInt(10 * 1e18))
+      ).to.be.revertedWithCustomError(
+        tokenMigration,
+        "OwnableUnauthorizedAccount"
+      );
+      expect(await ctrl.balanceOf(owner)).to.equal(balanceOfOwner);
+      expect(await ctrl.balanceOf(migrationContract)).to.equal(
+        balanceOfMigrationContract
+      );
     });
   });
 });
