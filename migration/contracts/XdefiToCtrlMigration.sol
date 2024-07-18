@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
@@ -22,7 +21,7 @@ contract XdefiToCtrlMigration is Ownable {
      * @param _newToken The address of the new token (CTRL).
      * @param _poolToken The address of the pool token (vXDEFI).
      */
-    constructor(IERC20 _oldToken, IERC20 _newToken, IERC4626 _poolToken) Ownable() {
+    constructor(IERC20 _oldToken, IERC20 _newToken, IERC4626 _poolToken) Ownable(msg.sender) {
         require(address(_oldToken) != address(0), "Old token address cannot be zero");
         require(address(_newToken) != address(0), "New token address cannot be zero");
         require(address(_poolToken) != address(0), "Pool token address cannot be zero");

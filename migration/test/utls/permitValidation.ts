@@ -31,8 +31,7 @@ export async function getApprovalDigest(
       ]
     )
   );
-
-  console.log({ structHash });
+  console.log("structHash", structHash);
 
   return keccak256(
     solidityPacked(
@@ -61,9 +60,9 @@ export async function verifyPermit(
     deadline,
     nonce
   );
-  console.log({ digest });
-
+  console.log("digest", digest);
   const recoveredAddress = recoverAddress(getBytes(digest), signature);
-  console.log({ recoveredAddress, owner: owner });
+  console.log("recoveredAddress", recoveredAddress);
+  console.log("owner", owner);
   return recoveredAddress === owner;
 }
