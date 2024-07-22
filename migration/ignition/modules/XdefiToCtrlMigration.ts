@@ -1,21 +1,29 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
 const XdefiToCtrlMigrationModule = buildModule(
-    "XdefiToCtrlMigrationModule",
-    (m) => {
+  "XdefiToCtrlMigrationModule",
+  (m) => {
+    const _oldToken = m.contractAt(
+      "XdefiTestERC20",
+      "0x0D6118C80cb2F954cf791EC5736FC218Ba644d05"
+    );
+    const _newToken = m.contractAt(
+      "CtrlTestERC20",
+      "0x3A1ccBF76c9649DD3C57A0f641658678B30af1E5"
+    );
+    const _poolToken = m.contractAt(
+      "XDEFIVault",
+      "0x97890070f6144012b2F8aEd70a8818E3972156af"
+    );
 
-        const _oldToken = m.contractAt("XdefiTestERC20", '0x46b01429E0B31e37De7Cdac24071cB94E6de43a6');
-        const _newToken =  m.contractAt("CtrlTestERC20", '0xF4a2c191Da5A3D173F36c27626C4397A94b7e50a');
+    const xdefiToCtrlMigrationContract = m.contract(
+      "XdefiToCtrlMigration",
+      [_oldToken, _newToken, _poolToken],
+      {}
+    );
 
-        const xdefiToCtrlMigrationContract = m.contract("XdefiToCtrlMigration", [
-            _oldToken,
-            _newToken,
-        ], {
-
-        });
-
-        return { xdefiToCtrlMigrationContract };
-    },
+    return { xdefiToCtrlMigrationContract };
+  }
 );
 
 export default XdefiToCtrlMigrationModule;
