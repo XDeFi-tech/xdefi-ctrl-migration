@@ -1,0 +1,19 @@
+{
+  "name": "xdefi-holder-snapshot",
+  "version": "0.0.1",
+  "description": "xdefi holder snapshot worker",
+  "main": "index.js",
+  "license": "commercial",
+  "private": true,
+  "dependencies": {
+    "ethers": "^6.13.1",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0"
+  },
+  "scripts": {
+    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "start": "esbuild index.ts --outfile=index.js --bundle --watch --target=es2020"
+  }
+}
