@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { chainConfig } from "./config";
 import * as ethers from "ethers";
-import { erc20Abi } from "./erc20abi";
+import { erc20Abi } from "./erc20Abi";
 import { TransferLog } from "./db/entity/TransferLog";
 
 export type Chain = "ethereum" | "arbitrum";
@@ -33,6 +33,8 @@ export async function pullEventLogs({
 
   const currentBlockNumber = await provider.getBlockNumber();
 
+  const blockNumberDeployedOn = chainConfig[chain].blockNumberDeployedOn;
+
   let events: any[];
 
   const queryRunner = dataSource.createQueryRunner();
@@ -54,7 +56,7 @@ export async function pullEventLogs({
         args: [from, to, amount],
         blockNumber,
         transactionHash,
-      } = event.args;
+      } = event;
 
       const eventLog = queryRunner.manager.create(TransferLog, {
         amount: amount.toString(),
@@ -71,5 +73,9 @@ export async function pullEventLogs({
     await queryRunner.manager.save(entities);
 
     entities = [];
-  } while (events.length !== 0);
+    lastProcessedBlockNumber -= 500;
+  } while (
+    events.length !== 0 ||
+    lastProcessedBlockNumber >= blockNumberDeployedOn
+  );
 }

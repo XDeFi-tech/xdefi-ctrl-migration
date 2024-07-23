@@ -6,14 +6,18 @@
   "license": "commercial",
   "private": true,
   "dependencies": {
+    "dotenv": "^16.4.5",
     "ethers": "^6.13.1",
+    "pg": "^8.12.0",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "esbuild": "^0.23.0"
+    "esbuild": "^0.23.0",
+    "esbuild-plugin-tsc": "^0.4.0",
+    "typescript": "^5.5.4"
   },
   "scripts": {
-    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
-    "start": "esbuild index.ts --outfile=index.js --bundle --watch --target=es2020"
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "dev": "esbuild src/index.ts --outfile=index.js --bundle --platform=node --watch --target=es2020"
   }
 }

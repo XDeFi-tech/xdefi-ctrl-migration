@@ -25,7 +25,7 @@ export class TransferLog extends BaseEntity {
   @Column()
   to!: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "numeric" })
   amount!: string;
 
   @Index()
