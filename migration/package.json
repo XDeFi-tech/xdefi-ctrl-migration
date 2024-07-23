@@ -1,5 +1,9 @@
 {
   "name": "hardhat-project",
+  "license": "MIT",
+  "scripts": {
+    "test": "ts-mocha"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.6",
@@ -13,15 +17,18 @@
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
     "@types/chai": "^4.2.0",
-    "@types/mocha": ">=9.1.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.11",
     "chai": "^4.2.0",
     "ethers": "^6.4.0",
     "hardhat": "^2.22.6",
     "hardhat-gas-reporter": "^1.0.8",
+    "mocha": "^10.7.0",
     "solidity-coverage": "^0.8.1",
+    "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
