@@ -8,6 +8,7 @@ import "tsconfig-paths/register";
 
 const PRIVATE_KEY: string = process.env.PRIVATE_KEY || "";
 const BOB_PRIVATE_KEY: string = process.env.BOB_PRIVATE_KEY || "";
+const ALICE_PRIVATE_KEY: string = process.env.ALICE_PRIVATE_KEY || "";
 const SEPOLIA_API: string =
   process.env.SEPOLIA_API ||
   "https://eth-sepolia.g.alchemy.com/v2/5mkt3seuOH3k2m8SwCsQDDckTC5jT27e";
@@ -21,11 +22,11 @@ const config: HardhatUserConfig = {
     hardhat: {},
     sepolia: {
       url: SEPOLIA_API,
-      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY],
+      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY, ALICE_PRIVATE_KEY],
     },
     ethereum: {
       url: ETHEREUM_API,
-      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY],
+      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY, ALICE_PRIVATE_KEY],
     },
   },
   paths: {
