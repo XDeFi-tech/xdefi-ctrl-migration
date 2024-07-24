@@ -7,11 +7,13 @@ envConfig();
 import "tsconfig-paths/register";
 
 const PRIVATE_KEY: string = process.env.PRIVATE_KEY || "";
+const BOB_PRIVATE_KEY: string = process.env.BOB_PRIVATE_KEY || "";
+const ALICE_PRIVATE_KEY: string = process.env.ALICE_PRIVATE_KEY || "";
 const SEPOLIA_API: string =
-    process.env.SEPOLIA_API ||
-    "https://eth-sepolia.g.alchemy.com/v2/5mkt3seuOH3k2m8SwCsQDDckTC5jT27e";
+  process.env.SEPOLIA_API ||
+  "https://eth-sepolia.g.alchemy.com/v2/5mkt3seuOH3k2m8SwCsQDDckTC5jT27e";
 const ETHEREUM_API =
-    process.env.ETHEREUM_API || "https://ethereum-mainnet.xdefiservices.com";
+  process.env.ETHEREUM_API || "https://ethereum-mainnet.xdefiservices.com";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
@@ -20,11 +22,11 @@ const config: HardhatUserConfig = {
     hardhat: {},
     sepolia: {
       url: SEPOLIA_API,
-      accounts: [PRIVATE_KEY],
+      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY, ALICE_PRIVATE_KEY],
     },
     ethereum: {
       url: ETHEREUM_API,
-      accounts: [PRIVATE_KEY],
+      accounts: [PRIVATE_KEY, BOB_PRIVATE_KEY, ALICE_PRIVATE_KEY],
     },
   },
   paths: {

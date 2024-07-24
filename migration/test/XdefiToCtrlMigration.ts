@@ -883,16 +883,14 @@ describe("XdefiToCtrlMigration", function () {
       const { v, r, s } = hre.ethers.Signature.from(sig);
 
       // Migrate vXdefi to ctrl, spender will get XDEFI and owner will get CTRL
-      const migrate = tokenMigration
-        .connect(bob)
-        .migrateGaslessFromVXDEFI(
-          message.owner,
-          message.value,
-          message.deadline,
-          v,
-          r,
-          s
-        );
+      const migrate = tokenMigration.migrateGaslessFromVXDEFI(
+        message.owner,
+        message.value,
+        message.deadline,
+        v,
+        r,
+        s
+      );
 
       await expect(migrate).to.changeTokenBalance(
         vXdefi,
