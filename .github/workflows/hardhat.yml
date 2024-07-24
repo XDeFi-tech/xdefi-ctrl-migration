@@ -1,0 +1,37 @@
+name: Hardhat CI
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Hardhat unit test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run XDEFI to CTRL migration test on hardhat
+        run: npx hardhat test test/XdefiToCtrlMigration.ts --network hardhat
+
+      - name: Run CTRL to XDEFI migration test coverage on hardhat
+        run: npx hardhat coverage --sources XdefiToCtrlMigration.sol
+    env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        BOB_PRIVATE_KEY: ${{ secrets.BOB_PRIVATE_KEY }}
+        ALICE_PRIVATE_KEY: ${{ secrets.ALICE_PRIVATE_KEY }}
+
+        SEPOLIA_API: ${{ secrets.SEPOLIA_API }}
+        ETHEREUM_API: ${{ secrets.ETHEREUM_API }}
+
+        REPORT_GAS: true
+        SOLIDITY_COVERAGE: true
+        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
+
+
