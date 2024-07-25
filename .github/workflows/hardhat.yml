@@ -27,7 +27,9 @@ jobs:
         working-directory: ./migration
 
       - name: Update README.md
-        run: markdown-include markdown.json
+        run: |
+          npm install -g markdown-include
+          markdown-include markdown.json
         working-directory: ./migration
 
     env:
