@@ -26,6 +26,20 @@ jobs:
         run: npx hardhat coverage --sources XdefiToCtrlMigration.sol
         working-directory: ./migration
 
+      - name: Markdown autodocs
+      - uses: dineshsonachalam/markdown-autodocs@v1.0.7
+        with:
+          # Optional, but recommended
+          # Defaults to "Apply automatic changes"
+          commit_message: Updated results
+
+          # Optional output file paths, defaults to '[./README.md]'.
+          output_file_paths: '[./README.md]'
+
+          # Categories to automatically sync or transform its contents in the markdown files.
+          # Defaults to '[code-block,json-to-html-table,workflow-artifact-table]'
+          categories: '[code-block,json-to-html-table,workflow-artifact-table]'
+
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         BOB_PRIVATE_KEY: ${{ secrets.BOB_PRIVATE_KEY }}

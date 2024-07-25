@@ -11,3 +11,9 @@ REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ```
+
+<!-- MARKDOWN-AUTO-DOCS:START (CODE:src=./gas-report.md) -->
+<!-- MARKDOWN-AUTO-DOCS:END -->
+
+<!-- MARKDOWN-AUTO-DOCS:START (JSON_TO_HTML_TABLE:src=./coverage.json) -->
+<!-- MARKDOWN-AUTO-DOCS:END -->
