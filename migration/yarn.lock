@@ -2961,6 +2961,13 @@ make-error@^1.1.1:
   resolved "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz"
   integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
 
+markdown-include@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/markdown-include/-/markdown-include-0.4.3.tgz#bac6555402c6da93a0f52952225dfb9a6ccc731b"
+  integrity sha512-kw1f+iJ8jAH9SYljv2RXmhRQFr2oMPPVdyoKaZIH+uA1rrQqDjLk6EQZW65oVz1Y+BkC3V//9lEvKKjRZNb1Jg==
+  dependencies:
+    q "^1.2.0"
+
 markdown-table@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-2.0.0.tgz#194a90ced26d31fe753d8b9434430214c011865b"
@@ -3377,6 +3384,11 @@ punycode@^2.1.0:
   version "2.3.1"
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
+
+q@^1.2.0:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+  integrity sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==
 
 queue-microtask@^1.2.2:
   version "1.2.3"
