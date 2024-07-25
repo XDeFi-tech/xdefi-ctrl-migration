@@ -39,7 +39,6 @@ jobs:
           message: Update README.md
           add: README.md
           push: true
-        run: "echo 'Changes committed and pushed'"
         working-directory: ./migration
 
     env:
