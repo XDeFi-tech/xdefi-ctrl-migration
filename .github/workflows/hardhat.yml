@@ -32,12 +32,14 @@ jobs:
           markdown-include markdown.json
         working-directory: ./migration
 
-      - uses: EndBug/add-and-commit@v9
+      - name: Publish new README.md
+        uses: github-actions-x/commit@v2.9
         with:
-          author_name: Hardhat CI
-          message: Update README.md
-          add: migration/README.md
-          push: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'publish'
+          force-add: 'true'
+          files: migration/README.md
+          name: Hardhat CI
 
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
@@ -51,8 +53,4 @@ jobs:
         SOLIDITY_COVERAGE: true
         ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
-
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
 
