@@ -32,14 +32,12 @@ jobs:
           markdown-include markdown.json
         working-directory: ./migration
 
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v9
+      - uses: EndBug/add-and-commit@v9
         with:
           author_name: Hardhat CI
           message: Update README.md
-          add: README.md
+          add: migration/README.md
           push: true
-        working-directory: ./migration
 
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
