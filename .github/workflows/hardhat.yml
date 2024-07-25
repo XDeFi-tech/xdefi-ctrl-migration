@@ -32,6 +32,16 @@ jobs:
           markdown-include markdown.json
         working-directory: ./migration
 
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Hardhat CI
+          message: Update README.md
+          add: README.md
+          push: true
+        run: "echo 'Changes committed and pushed'"
+        working-directory: ./migration
+
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         BOB_PRIVATE_KEY: ${{ secrets.BOB_PRIVATE_KEY }}
@@ -44,5 +54,8 @@ jobs:
         SOLIDITY_COVERAGE: true
         ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
+
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
