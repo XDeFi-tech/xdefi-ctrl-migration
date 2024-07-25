@@ -3,11 +3,12 @@ on: [push]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     name: Hardhat unit test
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Environment
         uses: actions/setup-node@v3
         with:
@@ -15,12 +16,16 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+        working-directory: ./migration
 
       - name: Run XDEFI to CTRL migration test on hardhat
         run: npx hardhat test test/XdefiToCtrlMigration.ts --network hardhat
+        working-directory: ./migration
 
       - name: Run CTRL to XDEFI migration test coverage on hardhat
         run: npx hardhat coverage --sources XdefiToCtrlMigration.sol
+        working-directory: ./migration
+
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         BOB_PRIVATE_KEY: ${{ secrets.BOB_PRIVATE_KEY }}
