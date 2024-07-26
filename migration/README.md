@@ -24,27 +24,27 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 | **CtrlTestERC20**                   |         |         |         |       |         |
 |        *transfer*                   |       - |       - |  52,200 |    24 |    0.34 |
 | **XdefiTestERC20**                  |         |         |         |       |         |
-|        *approve*                    |       - |       - |  46,932 |     6 |    0.30 |
+|        *approve*                    |       - |       - |  46,932 |     6 |    0.31 |
 |        *transfer*                   |  35,675 |  52,787 |  51,876 |    19 |    0.34 |
 | **XdefiToCtrlMigration**            |         |         |         |       |         |
-|        *migrate*                    |       - |       - | 136,311 |     5 |    0.89 |
-|        *migrateFromVXDEFI*          |       - |       - | 168,272 |     5 |    1.09 |
-|        *migrateGaslessFromVXDEFI*   |       - |       - | 168,840 |     5 |    1.10 |
-|        *migrateWithGaslessApproval* |       - |       - | 136,858 |     5 |    0.89 |
+|        *migrate*                    |       - |       - | 136,323 |     5 |    0.89 |
+|        *migrateFromVXDEFI*          |       - |       - | 168,284 |     5 |    1.10 |
+|        *migrateGaslessFromVXDEFI*   |       - |       - | 168,852 |     5 |    1.10 |
+|        *migrateWithGaslessApproval* |       - |       - | 136,870 |     5 |    0.89 |
 |        *withdrawNewTokens*          |       - |       - |  44,077 |     1 |    0.29 |
 |        *withdrawOldTokens*          |       - |       - |  44,665 |     1 |    0.29 |
 |        *withdrawPoolTokens*         |       - |       - |  55,244 |     1 |    0.36 |
 | **XDEFIVault**                      |         |         |         |       |         |
-|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    0.73 |
+|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    0.74 |
 |        *transfer*                   |       - |       - |  52,178 |     2 |    0.34 |
 
 ## Deployments
 |                          | Min | Max  |       Avg | Block % | usd avg |
 | :----------------------- | --: | ---: | --------: | ------: | ------: |
-| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   11.33 |
-| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   16.15 |
-| **XdefiToCtrlMigration** |   - |    - | 1,467,477 |     0 % |    9.53 |
-| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   22.05 |
+| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   11.38 |
+| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   16.23 |
+| **XdefiToCtrlMigration** |   - |    - | 1,467,477 |     0 % |    9.58 |
+| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   22.15 |
 
 ## Solidity and Network Config
 | **Settings**        | **Value**             |
@@ -55,7 +55,7 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 | Solidity: viaIR     | false                 |
 | Block Limit         | 9,007,199,254,740,991 |
 | L1 Gas Price        | 2 gwei                |
-| Token Price         | 3246.92 usd/eth       |
+| Token Price         | 3262.51 usd/eth       |
 | Network             | ETHEREUM              |
 | Toolchain           | hardhat               |
 
