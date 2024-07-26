@@ -1,17 +1,19 @@
 import { DataSource } from "typeorm";
 import { HolderBalance } from "../../db/entity/HolderBalance";
 import { TransferLog } from "../../db/entity/TransferLog";
-import { Chain } from "../../types";
+import { Chain, Token } from "../../types";
 
 export type BuildBalancesParams = {
   chain: Chain;
   dataSource: DataSource;
   lastBlockNumber?: boolean;
+  token: Token;
 };
 export async function buildBalances({
   chain,
   dataSource,
   lastBlockNumber,
+  token,
 }: BuildBalancesParams) {
   const queryRunner = await dataSource.createQueryRunner();
 
@@ -21,6 +23,7 @@ export async function buildBalances({
 
   logsQuery
     .where("tl.chain = :chain", { chain })
+    .andWhere("tl.token = :token", { token })
     .orderBy("tl.blockNumber", "ASC")
     .addOrderBy("tl.transactionHash");
 
@@ -43,10 +46,12 @@ export async function buildBalances({
     for (const log of logs) {
       let holderFrom = await holderRepository.findOneBy({
         address: log.from,
+        token,
       });
 
       let holderTo = await holderRepository.findOneBy({
         address: log.to,
+        token,
       });
 
       if (!holderFrom) {
@@ -54,6 +59,7 @@ export async function buildBalances({
           address: log.from,
           chain,
           balance: "0",
+          token,
         });
       }
 
@@ -62,6 +68,7 @@ export async function buildBalances({
           address: log.to,
           chain,
           balance: "0",
+          token,
         });
       }
 

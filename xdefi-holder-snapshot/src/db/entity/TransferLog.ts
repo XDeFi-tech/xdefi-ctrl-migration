@@ -28,6 +28,11 @@ export class TransferLog extends BaseEntity {
   @Column({ type: "numeric" })
   amount!: string;
 
+  @Column({
+    nullable: true,
+  })
+  token!: string;
+
   @Index()
   @Column()
   chain!: string;

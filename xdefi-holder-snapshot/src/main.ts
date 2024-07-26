@@ -2,7 +2,7 @@ import { AppDataSource } from "./db/app-data-source";
 import { buildBalances } from "./hadnlers/buildBalances/buildBalances";
 import { pullEventLogs } from "./hadnlers/pullEventLogs/pullEventLogs";
 import { chainConfig } from "./config";
-import { Chain } from "./types";
+import { Chain, Token } from "./types";
 
 import * as fs from "fs";
 
@@ -12,10 +12,10 @@ export async function main() {
 
   const queryRunner = await dataSource.createQueryRunner();
 
-  const minAmount = 100 * 10 ** 18;
+  // const minAmount = 100 * 10 ** 18;
 
   const data = await queryRunner.manager.query(`
-      SELECT * from holder_balance where balance >= ${minAmount} AND "chain"='arbitrum'
+      SELECT * from holder_balance  WHERE "chain"='ethereum' and "token"='vxdefi' and balance > 0
     `);
 
   data.forEach((holderRecord: any) => {
@@ -25,22 +25,28 @@ export async function main() {
     };
   });
 
-  fs.writeFileSync("arbitrum_holders.json", JSON.stringify(ethData, null, 2));
+  fs.writeFileSync(
+    "vxdefi_holders_ethereum.json",
+    JSON.stringify(ethData, null, 2)
+  );
 
-  // const chains: Chain[] = ["arbitrum", "ethereum"];
+  // const chains: Chain[] = ["ethereum"];
   // for (let chain of chains) {
   //   await buildBalances({
   //     chain,
   //     dataSource,
+  //     token: "vxdefi",
   //   });
   // }
 
   // const chain: Chain = "ethereum";
-  // const config = chainConfig[chain];
+  // const token: Token = "vxdefi";
+  // const config = chainConfig[token][chain];
   // await pullEventLogs({
   //   dataSource,
   //   chain: "ethereum",
   //   blocksInStep: config.blocksInStep,
   //   endBlock: config.blockNumberDeployedOn,
+  //   token,
   // });
 }

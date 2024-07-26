@@ -3,10 +3,10 @@ import { chainConfig } from "../../config";
 import * as ethers from "ethers";
 import { erc20Abi } from "../../erc20Abi";
 import { TransferLog } from "../../db/entity/TransferLog";
-import { Chain } from "../../types";
+import { Chain, Token } from "../../types";
 
-function getProvider(chain: Chain) {
-  const chainData = chainConfig[chain];
+function getProvider(chain: Chain, token: Token) {
+  const chainData = chainConfig[token][chain];
 
   const provider = new ethers.JsonRpcProvider(chainData.providerUrl);
 
@@ -28,6 +28,7 @@ export type PullEventLogsParams = {
   startBlock?: number;
   endBlock: number;
   blocksInStep: number;
+  token: Token;
 };
 
 export async function pullEventLogs({
@@ -36,8 +37,9 @@ export async function pullEventLogs({
   startBlock = 0,
   endBlock,
   blocksInStep,
+  token,
 }: PullEventLogsParams) {
-  const { contract, provider } = getProvider(chain);
+  const { contract, provider } = getProvider(chain, token);
 
   let currentBlockNumber = startBlock;
 
@@ -75,6 +77,7 @@ export async function pullEventLogs({
         chain,
         blockNumber,
         transactionHash,
+        token,
       });
 
       entities.push(eventLog);

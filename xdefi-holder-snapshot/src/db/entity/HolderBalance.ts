@@ -22,4 +22,9 @@ export class HolderBalance extends BaseEntity {
   @Index()
   @Column()
   chain!: string;
+
+  @Column({
+    nullable: true,
+  })
+  token!: string;
 }
