@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import hre from "hardhat";
-import { Permit } from "./utls/helpers";
+import { Permit } from "../test/utls/helpers";
 
 describe("XdefiToCtrlMigration", () => {
   async function loadXdefiContract() {

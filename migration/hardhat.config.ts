@@ -1,5 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "hardhat-gas-reporter";
+
 import { config as envConfig } from "dotenv";
 envConfig();
 
@@ -15,9 +17,30 @@ const SEPOLIA_API: string =
 const ETHEREUM_API =
   process.env.ETHEREUM_API || "https://ethereum-mainnet.xdefiservices.com";
 
+const REPORT_GAS: boolean = process.env.REPORT_GAS === "true";
+const COINMARKETCAP_API_KEY: string = process.env.COINMARKETCAP_API_KEY || "";
+const ETHERSCAN_API_KEY: string = process.env.ETHERSCAN_API_KEY || "";
+
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
   defaultNetwork: "sepolia",
+  gasReporter: {
+    enabled: REPORT_GAS,
+    currency: "USD",
+    token: "ETH",
+    L1: "ethereum",
+    gasPriceApi: `https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=${ETHERSCAN_API_KEY}`,
+    coinmarketcap: COINMARKETCAP_API_KEY,
+    reportFormat: "markdown",
+    outputFile: "gas-report.md",
+  },
+  etherscan: {
+    apiKey: {
+      // Ethereum
+      goerli: ETHERSCAN_API_KEY,
+      mainnet: ETHERSCAN_API_KEY,
+    },
+  },
   networks: {
     hardhat: {},
     sepolia: {
