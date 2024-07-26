@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
-import { chainConfig } from "./config";
+import { chainConfig } from "../../config";
 import * as ethers from "ethers";
-import { erc20Abi } from "./erc20Abi";
-import { TransferLog } from "./db/entity/TransferLog";
+import { erc20Abi } from "../../erc20Abi";
+import { TransferLog } from "../../db/entity/TransferLog";
+import { Chain } from "../../types";
 
-export type Chain = "ethereum" | "arbitrum";
 function getProvider(chain: Chain) {
   const chainData = chainConfig[chain];
 
@@ -22,18 +22,28 @@ function getProvider(chain: Chain) {
   };
 }
 
+export type PullEventLogsParams = {
+  dataSource: DataSource;
+  chain: Chain;
+  startBlock?: number;
+  endBlock: number;
+  blocksInStep: number;
+};
+
 export async function pullEventLogs({
   dataSource,
   chain,
-}: {
-  dataSource: DataSource;
-  chain: Chain;
-}) {
+  startBlock = 0,
+  endBlock,
+  blocksInStep,
+}: PullEventLogsParams) {
   const { contract, provider } = getProvider(chain);
 
-  const currentBlockNumber = await provider.getBlockNumber();
+  let currentBlockNumber = startBlock;
 
-  const blockNumberDeployedOn = chainConfig[chain].blockNumberDeployedOn;
+  if (!currentBlockNumber) {
+    currentBlockNumber = await provider.getBlockNumber();
+  }
 
   let events: any[];
 
@@ -45,7 +55,7 @@ export async function pullEventLogs({
   do {
     events = await contract.queryFilter(
       "Transfer",
-      lastProcessedBlockNumber - 500,
+      lastProcessedBlockNumber - blocksInStep,
       lastProcessedBlockNumber
     );
 
@@ -73,9 +83,8 @@ export async function pullEventLogs({
     await queryRunner.manager.save(entities);
 
     entities = [];
-    lastProcessedBlockNumber -= 500;
-  } while (
-    events.length !== 0 ||
-    lastProcessedBlockNumber >= blockNumberDeployedOn
-  );
+    lastProcessedBlockNumber -= blocksInStep;
+  } while (events.length !== 0 || lastProcessedBlockNumber >= endBlock);
+
+  await queryRunner.release();
 }

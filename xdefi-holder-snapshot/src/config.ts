@@ -10,14 +10,15 @@ export const DB_SSL_MODE = process.env.DB_SSL_MODE
 
 export const chainConfig = {
   ethereum: {
-    // providerUrl: "https://ethereum-rpc.publicnode.com",
     providerUrl: "https://eth.llamarpc.com",
     tokenContract: "0x72b886d09c117654ab7da13a14d603001de0b777",
     blockNumberDeployedOn: 13614950,
+    blocksInStep: 500,
   },
   arbitrum: {
     providerUrl: "https://arb1.arbitrum.io/rpc",
     tokenContract: "0x180f7cf38805d1be95c7632f653e26b0838e2969",
-    blockNumberDeployedOn: 0,
+    blockNumberDeployedOn: 189712949,
+    blocksInStep: 5000,
   },
 } as const;

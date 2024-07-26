@@ -1,7 +1,46 @@
 import { AppDataSource } from "./db/app-data-source";
-import { pullEventLogs } from "./pullEventLogs";
+import { buildBalances } from "./hadnlers/buildBalances/buildBalances";
+import { pullEventLogs } from "./hadnlers/pullEventLogs/pullEventLogs";
+import { chainConfig } from "./config";
+import { Chain } from "./types";
 
+import * as fs from "fs";
+
+const ethData: Record<string, any> = {};
 export async function main() {
   const dataSource = await AppDataSource.initialize();
-  await pullEventLogs({ dataSource, chain: "ethereum" });
+
+  const queryRunner = await dataSource.createQueryRunner();
+
+  const minAmount = 100 * 10 ** 18;
+
+  const data = await queryRunner.manager.query(`
+      SELECT * from holder_balance where balance >= ${minAmount} AND "chain"='arbitrum'
+    `);
+
+  data.forEach((holderRecord: any) => {
+    ethData[holderRecord.address] = {
+      address: holderRecord.address,
+      balance: holderRecord.balance,
+    };
+  });
+
+  fs.writeFileSync("arbitrum_holders.json", JSON.stringify(ethData, null, 2));
+
+  // const chains: Chain[] = ["arbitrum", "ethereum"];
+  // for (let chain of chains) {
+  //   await buildBalances({
+  //     chain,
+  //     dataSource,
+  //   });
+  // }
+
+  // const chain: Chain = "ethereum";
+  // const config = chainConfig[chain];
+  // await pullEventLogs({
+  //   dataSource,
+  //   chain: "ethereum",
+  //   blocksInStep: config.blocksInStep,
+  //   endBlock: config.blockNumberDeployedOn,
+  // });
 }

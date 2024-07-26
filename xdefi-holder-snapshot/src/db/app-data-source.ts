@@ -9,6 +9,7 @@ import {
   NODE_ENV,
 } from "../config";
 import { TransferLog } from "./entity/TransferLog";
+import { HolderBalance } from "./entity/HolderBalance";
 
 const AppDataSource = new DataSource({
   type: "postgres",
@@ -29,7 +30,7 @@ const AppDataSource = new DataSource({
         }
     : false,
   logging: false,
-  entities: [TransferLog],
+  entities: [TransferLog, HolderBalance],
   migrations:
     NODE_ENV === "local"
       ? ["src/migrations/**/*.ts"]
