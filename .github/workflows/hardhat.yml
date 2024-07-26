@@ -40,7 +40,7 @@ jobs:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          commit-message: 'publish'
          force-add: 'true'
-         files: migration/README.md
+         files: migration/README.md migration/gas-report.md
          name: Hardhat CI
 
     env:
