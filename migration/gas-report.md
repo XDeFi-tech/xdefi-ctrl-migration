@@ -7,29 +7,30 @@
 |                                     |     Min |     Max |     Avg | Calls | usd avg |
 | :---------------------------------- | ------: | ------: | ------: | ----: | ------: |
 | **CtrlTestERC20**                   |         |         |         |       |         |
-|        *transfer*                   |       - |       - |  52,200 |    24 |    0.34 |
+|        *transfer*                   |       - |       - |  52,200 |    24 |    0.87 |
 | **XdefiTestERC20**                  |         |         |         |       |         |
-|        *approve*                    |       - |       - |  46,932 |     6 |    0.31 |
-|        *transfer*                   |  35,675 |  52,787 |  51,876 |    19 |    0.34 |
+|        *approve*                    |       - |       - |  46,932 |     6 |    0.78 |
+|        *transfer*                   |  35,675 |  52,787 |  51,876 |    19 |    0.86 |
 | **XdefiToCtrlMigration**            |         |         |         |       |         |
-|        *migrate*                    |       - |       - | 136,311 |     5 |    0.89 |
-|        *migrateFromVXDEFI*          |       - |       - | 168,260 |     5 |    1.10 |
-|        *migrateGaslessFromVXDEFI*   |       - |       - | 168,828 |     5 |    1.10 |
-|        *migrateWithGaslessApproval* |       - |       - | 136,858 |     5 |    0.89 |
-|        *withdrawNewTokens*          |       - |       - |  44,077 |     1 |    0.29 |
-|        *withdrawOldTokens*          |       - |       - |  44,665 |     1 |    0.29 |
-|        *withdrawPoolTokens*         |       - |       - |  55,244 |     1 |    0.36 |
+|        *migrate*                    |       - |       - | 138,423 |     5 |    2.29 |
+|        *migrateFromVXDEFI*          |       - |       - | 170,406 |     5 |    2.82 |
+|        *migrateGaslessFromVXDEFI*   |       - |       - | 170,952 |     5 |    2.83 |
+|        *migrateWithGaslessApproval* |       - |       - | 139,015 |     5 |    2.30 |
+|        *setTimeLock*                |  28,934 |  46,070 |  37,502 |     2 |    0.62 |
+|        *withdrawNewTokens*          |       - |       - |  44,077 |     1 |    0.73 |
+|        *withdrawOldTokens*          |       - |       - |  44,643 |     1 |    0.74 |
+|        *withdrawPoolTokens*         |       - |       - |  55,222 |     1 |    0.92 |
 | **XDEFIVault**                      |         |         |         |       |         |
-|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    0.74 |
-|        *transfer*                   |       - |       - |  52,178 |     2 |    0.34 |
+|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    1.87 |
+|        *transfer*                   |       - |       - |  52,178 |     2 |    0.86 |
 
 ## Deployments
 |                          | Min | Max  |       Avg | Block % | usd avg |
 | :----------------------- | --: | ---: | --------: | ------: | ------: |
-| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   11.38 |
-| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   16.22 |
-| **XdefiToCtrlMigration** |   - |    - | 1,467,477 |     0 % |    9.57 |
-| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   22.15 |
+| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   28.91 |
+| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   41.22 |
+| **XdefiToCtrlMigration** |   - |    - | 1,577,850 |     0 % |   26.15 |
+| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   56.27 |
 
 ## Solidity and Network Config
 | **Settings**        | **Value**             |
@@ -39,8 +40,8 @@
 | Solidity: runs      | 200                   |
 | Solidity: viaIR     | false                 |
 | Block Limit         | 9,007,199,254,740,991 |
-| L1 Gas Price        | 2 gwei                |
-| Token Price         | 3261.68 usd/eth       |
+| L1 Gas Price        | 5 gwei                |
+| Token Price         | 3314.60 usd/eth       |
 | Network             | ETHEREUM              |
 | Toolchain           | hardhat               |
 

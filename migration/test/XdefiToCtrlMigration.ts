@@ -46,6 +46,9 @@ describe("XdefiToCtrlMigration", function () {
       vXdefi
     );
 
+    const lockTime = Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 7); // 1 week
+    tokenMigration.setTimeLock(lockTime);
+
     console.log(
       `Xdefi: ${await xdefi.getAddress()}\nCtrl: ${await ctrl.getAddress()}\nvXdefi: ${await vXdefi.getAddress()}\nTokenMigration: ${await tokenMigration.getAddress()}\n`
     );
@@ -1593,6 +1596,74 @@ describe("XdefiToCtrlMigration", function () {
       expect(await xdefi.balanceOf(spender)).to.equal(
         initialXdefiBalanceOfSpender
       );
+    });
+  });
+
+  describe("Validate Time Lock", function () {
+    it("Should validate time lock for xdexi to ctrl migration, and fail if time lock is not expired", async function () {
+      const { tokenMigration, xdefi, ctrl, vXdefi, bob } = await loadFixture(
+        deployXdefiToCtrlMigrationFixture
+      );
+      await tokenMigration.setTimeLock(10);
+
+      const tokenAddress = await xdefi.getAddress();
+      const nonce = await xdefi.nonces(bob.address);
+
+      // domain separator for xdefi token
+      const domain = {
+        chainId: 31337, // parseInt(await hre.ethers.provider.send("eth_chainId")),
+        verifyingContract: tokenAddress as `0x${string}`,
+      };
+      // prepare the message for the permit
+      const message = {
+        owner: bob.address,
+        spender: await tokenMigration.getAddress(),
+        value: BigInt(10 * 1e18),
+        nonce: Number(nonce),
+        deadline: BigInt(Math.floor(Date.now() / 1000) + 60 * 10),
+      };
+      // Sign the message
+      const sig = await bob.signTypedData(domain, { Permit }, message);
+      const { v, r, s } = hre.ethers.Signature.from(sig);
+
+      // Migrate vXdefi to ctrl, spender will get XDEFI and owner will get CTRL
+      await expect(
+        tokenMigration
+          .connect(bob)
+          .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("Migration is disabled");
+
+      await expect(
+        tokenMigration
+          .connect(bob)
+          .migrateGaslessFromVXDEFI(
+            message.owner,
+            message.value,
+            message.deadline,
+            v,
+            r,
+            s
+          )
+      ).to.be.revertedWith("Migration is disabled");
+
+      await expect(
+        tokenMigration
+          .connect(bob)
+          .migrate(message.value, message.deadline, v, r, s)
+      ).to.be.revertedWith("Migration is disabled");
+
+      await expect(
+        tokenMigration
+          .connect(bob)
+          .migrateWithGaslessApproval(
+            message.owner,
+            message.value,
+            message.deadline,
+            v,
+            r,
+            s
+          )
+      ).to.be.revertedWith("Migration is disabled");
     });
   });
 
