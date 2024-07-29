@@ -1,5 +1,9 @@
 {
   "name": "hardhat-project",
+  "license": "MIT",
+  "scripts": {
+    "test": "ts-mocha"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.6",
@@ -9,23 +13,28 @@
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@nomicfoundation/ignition-core": "^0.15.5",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@openzeppelin/hardhat-upgrades": "^3.2.0",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
     "@types/chai": "^4.2.0",
-    "@types/mocha": ">=9.1.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.11",
     "chai": "^4.2.0",
     "ethers": "^6.4.0",
     "hardhat": "^2.22.6",
-    "hardhat-gas-reporter": "^1.0.8",
-    "solidity-coverage": "^0.8.1",
+    "hardhat-gas-reporter": "^2.2.0",
+    "mocha": "^10.7.0",
+    "solidity-coverage": "^0.8.12",
+    "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "dotenv": "^16.4.5",
+    "markdown-include": "^0.4.3",
     "tsconfig-paths": "^4.2.0"
   }
 }

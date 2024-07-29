@@ -1,0 +1,58 @@
+name: Hardhat CI
+on: [push]
+
+jobs:
+  test:
+    name: Hardhat unit test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./migration
+
+      - name: Run XDEFI to CTRL migration test on hardhat
+        run: npx hardhat test test/XdefiToCtrlMigration.ts --network hardhat
+        working-directory: ./migration
+
+      - name: Run CTRL to XDEFI migration test coverage on hardhat
+        run: npx hardhat coverage --sources XdefiToCtrlMigration.sol
+        working-directory: ./migration
+
+      - name: Update README.md
+        run: |
+          npm install -g markdown-include
+          markdown-include markdown.json
+        working-directory: ./migration
+
+      - name: Publish new README.md
+        uses: github-actions-x/commit@v2.9
+        with:
+         github-token: ${{ secrets.GITHUB_TOKEN }}
+         commit-message: 'publish'
+         force-add: 'true'
+         files: migration/README.md migration/gas-report.md
+         name: Hardhat CI
+
+    env:
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        BOB_PRIVATE_KEY: ${{ secrets.BOB_PRIVATE_KEY }}
+        ALICE_PRIVATE_KEY: ${{ secrets.ALICE_PRIVATE_KEY }}
+
+        SEPOLIA_API: ${{ secrets.SEPOLIA_API }}
+        ETHEREUM_API: ${{ secrets.ETHEREUM_API }}
+
+        REPORT_GAS: true
+        SOLIDITY_COVERAGE: true
+        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
+
