@@ -3,7 +3,7 @@ import {
   XDEFI_TOKEN_ADDRESS,
   USD_VALUE_THRESHOLD,
 } from "../../config/config";
-import { getTokenPrice } from "../../getTokenPrice";
+import { getTokenPrice } from "../getTokenPrice";
 import { MigrationContext } from "../MigrationContext";
 import xdefiArbitrumHolders from "../../data/holders/xdefi_arb_holders.json";
 import xdefiEthereumHolders from "../../data/holders/vxdefi_eth_holders.json";
