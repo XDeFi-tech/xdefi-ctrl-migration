@@ -3,6 +3,7 @@
     "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "ethers": "^6.13.1"
   },
   "devDependencies": {
