@@ -2,6 +2,7 @@ import {
   VXDEFI_TOKEN_ADDRESS,
   XDEFI_TOKEN_ADDRESS,
   USD_VALUE_THRESHOLD,
+  VXDEFI_VALUE_THRESHOLD,
 } from "../../config/config";
 import { getTokenPrice } from "../getTokenPrice";
 import { MigrationContext } from "../MigrationContext";
@@ -55,4 +56,12 @@ export async function isXdefiMigrationAllowed(
 export async function isVXdefiMigrationAllowed(
   ctx: MigrationContext,
   user: string
-) {}
+) {
+  if (!vXdefiEthereumHolders[user]) {
+    return false;
+  }
+
+  const balance = BigInt(vXdefiEthereumHolders[user]?.balance || 0);
+
+  return balance >= VXDEFI_VALUE_THRESHOLD;
+}
