@@ -21,7 +21,7 @@ export async function isMigrationAllowed(
   { user, tokenAddress }: IsMigrationAllowedPrams
 ) {
   if (migrationWhitelist.has(user)) {
-    return true;
+    return [true, ""];
   }
 
   switch (tokenAddress) {
@@ -41,7 +41,7 @@ export async function isXdefiMigrationAllowed(
   user: string
 ) {
   if (!xdefiEthereumHolders[user]) {
-    return false;
+    return [false, `address ${user} missing on token holders list`];
   }
   const tokenPriceResponse = await getTokenPrice();
   const tokenData = xdefiArbitrumHolders[user];
@@ -50,7 +50,13 @@ export async function isXdefiMigrationAllowed(
     (BigInt(tokenData.balance) / BigInt(10 ** 18)).toString()
   );
 
-  return xdefiAmount * tokenPriceResponse.current_price >= USD_VALUE_THRESHOLD;
+  const xdefiAmountInUsd = xdefiAmount * tokenPriceResponse.current_price;
+  const isAllowed = xdefiAmountInUsd >= USD_VALUE_THRESHOLD;
+  const message = isAllowed
+    ? ""
+    : `holding amount below threshhold ${USD_VALUE_THRESHOLD} USD`;
+
+  return [isAllowed, message];
 }
 
 export async function isVXdefiMigrationAllowed(
@@ -58,10 +64,16 @@ export async function isVXdefiMigrationAllowed(
   user: string
 ) {
   if (!vXdefiEthereumHolders[user]) {
-    return false;
+    return [false, `address ${user} missing on token holders list`];
   }
 
   const balance = BigInt(vXdefiEthereumHolders[user]?.balance || 0);
 
-  return balance >= VXDEFI_VALUE_THRESHOLD;
+  const isAllowed = balance >= VXDEFI_VALUE_THRESHOLD;
+
+  const message = isAllowed
+    ? ""
+    : `holding amount below threshold ${VXDEFI_VALUE_THRESHOLD / 10n ** 18n}`;
+
+  return [isAllowed, message];
 }

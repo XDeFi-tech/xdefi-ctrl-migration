@@ -20,6 +20,7 @@ Resources:
       CodeUri: HelloWorldFunction
       Handler: paymaster.handler
       Runtime: nodejs18.x
+      Timeout: 10
       Architectures:
       - x86_64
       Events:

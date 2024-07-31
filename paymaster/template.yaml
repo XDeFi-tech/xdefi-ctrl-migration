@@ -23,6 +23,7 @@ Resources:
       CodeUri: ./
       Handler: paymaster.handler
       Runtime: nodejs18.x
+      Timeout: 30
       Architectures:
         - x86_64
       Events:
