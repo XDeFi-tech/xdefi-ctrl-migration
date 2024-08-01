@@ -3,6 +3,7 @@
     "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
   },
   "dependencies": {
+    "@aws-sdk/client-kms": "^3.621.0",
     "axios": "^1.7.2",
     "ethers": "^6.13.1"
   },

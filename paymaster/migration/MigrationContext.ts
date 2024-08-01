@@ -1,12 +1,12 @@
 import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import {
   PROVIDER_RPC_URL,
-  PRIVATE_KEY,
   MIGRATION_CONTRACT_ADDRESS,
   XDEFI_TOKEN_ADDRESS,
 } from "../config/config";
 import { xdefiToCtrlMigrationAbi } from "../data/abi/xdefiToCtrlMigrationAbi";
 import { erc20Abi } from "../data/abi/erc20Abi";
+import { getMnemonic } from "./getMnemonic";
 
 export type MigrationContext = {
   migrationContract: Contract;
@@ -15,12 +15,11 @@ export type MigrationContext = {
   wallet: Wallet;
 };
 
-export function createMigrationContext(): MigrationContext {
+export async function createMigrationContext(): Promise<MigrationContext> {
   const provider = new JsonRpcProvider(PROVIDER_RPC_URL);
-  const wallet = new Wallet(
-    Wallet.fromPhrase(PRIVATE_KEY).privateKey,
-    provider
-  );
+
+  const mnemonic = await getMnemonic();
+  const wallet = new Wallet(Wallet.fromPhrase(mnemonic).privateKey, provider);
 
   const migrationContract = new Contract(
     MIGRATION_CONTRACT_ADDRESS,

@@ -12,17 +12,14 @@ export const CTRL_TOKEN_ADDRESS =
 
 export const MIGRATION_CONTRACT_ADDRESS =
   process.env.MIGRATION_CONTRACT_ADDRESS ||
-  "0xAe8E0350151009f79dcb5F2313773C5A04Ce0453";
-
-export const PRIVATE_KEY =
-  "mistake manage tomorrow ahead certain render size tornado scrub green flee giant";
+  "0x83df4Dc89402230b7B6ef7E8a0283CfEd80cDbC0";
 
 export const PROVIDER_RPC_URL =
   process.env.PROVIDER_RPC_UTL ||
   "https://eth-sepolia.g.alchemy.com/v2/5mkt3seuOH3k2m8SwCsQDDckTC5jT27e";
 
 export const USD_VALUE_THRESHOLD = parseFloat(
-  process.env.USD_VALUE_THRESHOLD || "100"
+  process.env.USD_VALUE_THRESHOLD || "1"
 );
 
 export const VXDEFI_VALUE_THRESHOLD =

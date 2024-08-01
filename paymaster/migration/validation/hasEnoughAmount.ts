@@ -10,8 +10,6 @@ export async function hasEnoughAmount(
   amount: BigInt
 ) {
   const balance = (await ctx.xdefiContract.balanceOf(user)) as BigInt;
-  console.log(balance, "<<<<<<<<<<", typeof balance);
-  return balance >= amount;
 
-  //   const;
+  return balance >= amount;
 }
