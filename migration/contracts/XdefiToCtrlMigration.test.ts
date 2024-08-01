@@ -22,7 +22,7 @@ describe("XdefiToCtrlMigration", () => {
   async function loadXdefiToCtrlMigrationContract() {
     const xdefiToCtrlMigration = await hre.ethers.getContractAt(
       "XdefiToCtrlMigration",
-      "0xAe8E0350151009f79dcb5F2313773C5A04Ce0453"
+      "0x83df4Dc89402230b7B6ef7E8a0283CfEd80cDbC0"
     );
     return xdefiToCtrlMigration;
   }
@@ -35,12 +35,71 @@ describe("XdefiToCtrlMigration", () => {
     return xdefiVault;
   }
 
+  // it("Should withdraw tokens from old version of token to new", async function () {
+  //   const tokenMigrationOld = await loadXdefiToCtrlMigrationContractOld();
+  //   const tokenMigrationNew = await loadXdefiToCtrlMigrationContract();
+  //   const ctrl = await loadCtrlContract();
+  //   const [creator] = await hre.ethers.getSigners();
+  //   const owner = await creator.getAddress();
+  //
+  //   // transfer ctrl tokens from old contract to new contract
+  //   const migrationContractOld = await tokenMigrationOld.getAddress();
+  //
+  //   const balanceOfCreator = await ctrl.balanceOf(owner);
+  //   const balanceOfMigrationContract = await ctrl.balanceOf(
+  //     migrationContractOld
+  //   );
+  //
+  //   // Withdraw ctrl tokens
+  //   const withdraw = await tokenMigrationOld.withdrawNewTokens(
+  //     balanceOfMigrationContract
+  //   );
+  //   await withdraw.wait();
+  //   expect(await ctrl.balanceOf(migrationContractOld)).to.equal(0);
+  //
+  //   // make deposit to new contract
+  //   const migrationContractNew = await tokenMigrationNew.getAddress();
+  //   const balanceOfCreatorAfterWithdraw = await ctrl.balanceOf(owner);
+  //   const balanceOfMigrationContractAfterWithdraw = await ctrl.balanceOf(
+  //     migrationContractNew
+  //   );
+  //
+  //   // transfer ctrl tokens to new contract
+  //   const transfer = await ctrl
+  //     .connect(creator)
+  //     .transfer(migrationContractNew, balanceOfMigrationContract);
+  //   await transfer.wait();
+  //
+  //   expect(await ctrl.balanceOf(owner)).to.equal(
+  //     balanceOfCreatorAfterWithdraw - balanceOfMigrationContract
+  //   );
+  //   expect(await ctrl.balanceOf(migrationContractNew)).to.equal(
+  //     balanceOfMigrationContract
+  //   );
+  //
+  //   // withdraw xdefi tokens from old contract
+  //   const xdefi = await loadXdefiContract();
+  //   const balanceOfMigrationContractXdefi = await xdefi.balanceOf(
+  //     migrationContractOld
+  //   );
+  //   const withdrawXdefi = await tokenMigrationOld.withdrawOldTokens(
+  //     balanceOfMigrationContractXdefi
+  //   );
+  //   await withdrawXdefi.wait();
+  //   expect(await xdefi.balanceOf(migrationContractOld)).to.equal(0);
+  // });
+
   describe("Migrate With Gas-less Approval", function () {
     it("Should migrate xdefi to ctrl with permit", async function () {
       const xdefi = await loadXdefiContract();
       const ctrl = await loadCtrlContract();
       const tokenMigration = await loadXdefiToCtrlMigrationContract();
       const [creator, bob] = await hre.ethers.getSigners();
+
+      // Set the timelock to 1 year
+      // const lockTime = Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 365); // 1 year
+      // const res = await tokenMigration.connect(creator).setTimeLock(lockTime);
+      // await res.wait();
 
       const spender = await tokenMigration.getAddress();
 
