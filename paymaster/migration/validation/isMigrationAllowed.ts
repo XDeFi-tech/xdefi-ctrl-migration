@@ -6,10 +6,8 @@ import {
 } from "../../config/config";
 import { getTokenPrice } from "../getTokenPrice";
 import { MigrationContext } from "../MigrationContext";
-import xdefiArbitrumHolders from "../../data/holders/xdefi_arb_holders.json";
-import xdefiEthereumHolders from "../../data/holders/xdefi_eth_holders.json";
-import vXdefiEthereumHolders from "../../data/holders/vxdefi_eth_holders.json";
 import { migrationWhitelist } from "../../data/migrationWhitelist";
+import { getTokenHolding } from "../getTokenHolding";
 
 export type IsMigrationAllowedPrams = {
   user: string;
@@ -41,21 +39,24 @@ export async function isXdefiMigrationAllowed(
   user: string
 ) {
   const addr = user.toLowerCase();
-  if (!xdefiEthereumHolders[addr]) {
+  const holding = getTokenHolding(XDEFI_TOKEN_ADDRESS, user);
+
+  if (!holding) {
     return [false, `address ${user} missing on token holders list`];
   }
+
   const tokenPriceResponse = await getTokenPrice();
-  const tokenData = xdefiEthereumHolders[addr];
 
   const xdefiAmount = parseInt(
-    (BigInt(tokenData.balance) / BigInt(10 ** 18)).toString()
+    (BigInt(holding.balance) / BigInt(10 ** 18)).toString()
   );
 
   const xdefiAmountInUsd = xdefiAmount * tokenPriceResponse.current_price;
   const isAllowed = xdefiAmountInUsd >= USD_VALUE_THRESHOLD;
+
   const message = isAllowed
     ? ""
-    : `holding amount below threshhold ${USD_VALUE_THRESHOLD} USD`;
+    : `holding amount below threshold ${USD_VALUE_THRESHOLD} USD`;
 
   return [isAllowed, message];
 }
@@ -64,12 +65,12 @@ export async function isVXdefiMigrationAllowed(
   ctx: MigrationContext,
   user: string
 ) {
-  const addr = user.toLowerCase();
-  if (!vXdefiEthereumHolders[addr]) {
+  const holding = getTokenHolding(VXDEFI_TOKEN_ADDRESS, user);
+  if (!holding) {
     return [false, `address ${user} missing on token holders list`];
   }
 
-  const balance = BigInt(vXdefiEthereumHolders[addr]?.balance || 0);
+  const balance = BigInt(holding.balance || 0);
 
   const isAllowed = balance >= VXDEFI_VALUE_THRESHOLD;
 

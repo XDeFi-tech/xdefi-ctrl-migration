@@ -1,6 +1,9 @@
 import { Context, APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
 import { migrateGaslessFrom } from "./migration/migrateGasless";
-import { createMigrationContext } from "./migration/MigrationContext";
+import {
+  initMigrationContext,
+  getMigrationContext,
+} from "./migration/MigrationContext";
 import { isMigrationAllowed } from "./migration/validation/isMigrationAllowed";
 import { hasEnoughAmount } from "./migration/validation/hasEnoughAmount";
 
@@ -27,9 +30,9 @@ export const Permit = [
   },
 ];
 
-const _migrationContext = createMigrationContext();
+initMigrationContext();
 
-const getDeadlineInSeconds = (deadlineInMinutes) => {
+const getDeadlineUnixTimestamp = (deadlineInMinutes: number) => {
   return Math.floor(Date.now() / 1000) + 60 * deadlineInMinutes;
 };
 
@@ -46,9 +49,9 @@ export const handler = async (
   //   verifyingContract: XDEFI_TOKEN_ADDRESS,
   // };
 
-  const { user, amount, deadline, tokenAddress, v, r, s } = reqBody;
+  const { user, deadline, tokenAddress, v, r, s } = reqBody;
 
-  const migrationContext = await _migrationContext;
+  const migrationContext = await getMigrationContext();
 
   // const nonce = await migrationContext.xdefiContract.nonces(user);
   // const deadline = getDeadlineInSeconds(10);
@@ -77,12 +80,6 @@ export const handler = async (
       tokenAddress,
     });
 
-    const hasEnough = await hasEnoughAmount(
-      migrationContext,
-      user,
-      BigInt(amount)
-    );
-
     if (!isAllowed) {
       return {
         statusCode: 400,
@@ -92,18 +89,13 @@ export const handler = async (
       };
     }
 
-    if (!hasEnough) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: `${user} balance below requested amount`,
-        }),
-      };
-    }
+    const amount = (await migrationContext.xdefiContract.balanceOf(
+      user
+    )) as BigInt;
 
     const tx = await migrateGaslessFrom(migrationContext, tokenAddress, {
       user,
-      amount: BigInt(amount),
+      amount,
       deadline: parseInt(deadline),
       v,
       r,
