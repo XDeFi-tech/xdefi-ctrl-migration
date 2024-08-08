@@ -15,7 +15,7 @@ export type MigrationContext = {
   wallet: Wallet;
 };
 
-let context: Promise<MigrationContext>;
+let context: MigrationContext;
 
 async function createMigrationContext(): Promise<MigrationContext> {
   const provider = new JsonRpcProvider(PROVIDER_RPC_URL);
@@ -39,13 +39,9 @@ async function createMigrationContext(): Promise<MigrationContext> {
   };
 }
 
-export function initMigrationContext() {
-  context = createMigrationContext();
-}
-
-export function getMigrationContext() {
+export async function getMigrationContext() {
   if (!context) {
-    throw new Error("you must call initMigrationContext first");
+    context = await createMigrationContext();
   }
   return context;
 }
