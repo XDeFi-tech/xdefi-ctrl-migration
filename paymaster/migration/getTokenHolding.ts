@@ -1,5 +1,5 @@
 import { XDEFI_TOKEN_ADDRESS, VXDEFI_TOKEN_ADDRESS } from "../config/config";
-import xdefiHolders from "../data/holders/vxdefi_eth_holders.json";
+import xdefiHolders from "../data/holders/xdefi_eth_holders.json";
 import vxdefiHolders from "../data/holders/vxdefi_eth_holders.json";
 
 export type TokenHolding = {
