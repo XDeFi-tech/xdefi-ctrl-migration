@@ -12,8 +12,18 @@ contract XdefiToCtrlMigration is Ownable {
     IERC20 public oldToken;
     IERC20 public newToken;
     IERC4626 public poolToken;
+    uint256 public validUntil;
 
     event Migrated(address indexed user, uint256 amount);
+
+    /**
+        * @dev Throws if the migration is disabled.
+        * The migration is disabled after the validUntil timestamp.
+    */
+    modifier timeLock() {
+        require(block.timestamp < validUntil, "Migration is disabled");
+        _;
+    }
 
     /**
      * @dev Initializes the contract with the old token, new token, and pool token addresses.
@@ -32,6 +42,15 @@ contract XdefiToCtrlMigration is Ownable {
     }
 
     /**
+     * @dev Sets the validUntil timestamp for the migration.
+     * function can only be called by the owner.
+     * @param _validUntil The new validUntil timestamp.
+     */
+    function setTimeLock(uint256 _validUntil) external onlyOwner {
+        validUntil = _validUntil;
+    }
+
+    /**
      * @dev Migrates old tokens (XDEFI) to new tokens (CTRL) for the caller.
      * @param amount The amount of old tokens to migrate.
      * @param deadline The permit deadline for the old token.
@@ -39,7 +58,7 @@ contract XdefiToCtrlMigration is Ownable {
      * @param r The first 32 bytes of the old token's signature.
      * @param s The second 32 bytes of the old token's signature.
      */
-    function migrate(uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+    function migrate(uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve oldToken with EIP-2612
         IERC20Permit(address(oldToken)).permit(msg.sender, address(this), amount, deadline, v, r, s);
 
@@ -61,7 +80,7 @@ contract XdefiToCtrlMigration is Ownable {
      * @param r The first 32 bytes of the old token's signature.
      * @param s The second 32 bytes of the old token's signature.
      */
-    function migrateWithGaslessApproval(address user, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+    function migrateWithGaslessApproval(address user, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve oldToken with EIP-2612 on behalf of the user
         IERC20Permit(address(oldToken)).permit(user, address(this), amount, deadline, v, r, s);
 
@@ -82,7 +101,7 @@ contract XdefiToCtrlMigration is Ownable {
      * @param r The first 32 bytes of the pool token's signature.
      * @param s The second 32 bytes of the pool token's signature.
      */
-    function migrateFromVXDEFI(uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+    function migrateFromVXDEFI(uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve vXDEFI with EIP-2612
         IERC20Permit(address(poolToken)).permit(msg.sender, address(this), shares, deadline, v, r, s);
 
@@ -107,7 +126,7 @@ contract XdefiToCtrlMigration is Ownable {
      * @param r The first 32 bytes of the pool token's signature.
      * @param s The second 32 bytes of the pool token's signature.
      */
-    function migrateGaslessFromVXDEFI(address user, uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external {
+    function migrateGaslessFromVXDEFI(address user, uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve vXDEFI with EIP-2612 on behalf of the user
         IERC20Permit(address(poolToken)).permit(user, address(this), shares, deadline, v, r, s);
 

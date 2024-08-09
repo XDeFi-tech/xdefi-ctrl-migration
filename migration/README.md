@@ -12,12 +12,12 @@ npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ```
 
-
 ## Methods
+
 | **Symbol** | **Meaning**                                                                              |
 | :--------: | :--------------------------------------------------------------------------------------- |
-|    **◯**   | Execution gas for this method does not include intrinsic gas overhead                    |
-|    **△**   | Cost was non-zero but below the precision setting for the currency display (see options) |
+|   **◯**    | Execution gas for this method does not include intrinsic gas overhead                    |
+|   **△**    | Cost was non-zero but below the precision setting for the currency display (see options) |
 
 |                                     |     Min |     Max |     Avg | Calls | usd avg |
 | :---------------------------------- | ------: | ------: | ------: | ----: | ------: |
@@ -39,14 +39,16 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 |        *transfer*                   |       - |       - |  52,178 |     2 |    2.35 |
 
 ## Deployments
-|                          | Min | Max  |       Avg | Block % | usd avg |
-| :----------------------- | --: | ---: | --------: | ------: | ------: |
-| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   78.53 |
-| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |  111.96 |
-| **XdefiToCtrlMigration** |   - |    - | 1,467,477 |     0 % |   66.06 |
-| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |  152.84 |
+
+|                          | Min | Max |       Avg | Block % | usd avg |
+| :----------------------- | --: | --: | --------: | ------: | ------: |
+| **CtrlTestERC20**        |   - |   - | 1,744,339 |     0 % |   78.53 |
+| **XdefiTestERC20**       |   - |   - | 2,486,975 |     0 % |  111.96 |
+| **XdefiToCtrlMigration** |   - |   - | 1,467,477 |     0 % |   66.06 |
+| **XDEFIVault**           |   - |   - | 3,395,066 |     0 % |  152.84 |
 
 ## Solidity and Network Config
+
 | **Settings**        | **Value**             |
 | ------------------- | --------------------- |
 | Solidity: version   | 0.8.24                |
@@ -58,6 +60,3 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 | Token Price         | 2501.07 usd/eth       |
 | Network             | ETHEREUM              |
 | Toolchain           | hardhat               |
-
-
-
