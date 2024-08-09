@@ -11,6 +11,13 @@ export type MigrateFromParams = {
   s: any;
 };
 
+/**
+ * Execute gassless migration on migration contract
+ * @param ctx MigrationContext
+ * @param tokenAddress contract address to migrate from
+ * @param MigrateFromParams amount, signature, wallet address
+ * @returns Transaction
+ */
 export async function migrateGaslessFrom(
   ctx: MigrationContext,
   tokenAddress: string,

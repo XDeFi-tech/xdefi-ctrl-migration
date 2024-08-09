@@ -13,6 +13,12 @@ export type IsMigrationAllowedPrams = {
   tokenAddress: string;
 };
 
+/**
+ * Check whether token migration is allowed for given user
+ * @param ctx
+ * @param IsMigrationAllowedPrams token contract to migrate from and user wallet address
+ * @returns boolean whether migration is allowed
+ */
 export async function isMigrationAllowed(
   ctx: MigrationContext,
   { user, tokenAddress }: IsMigrationAllowedPrams
