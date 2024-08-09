@@ -23,4 +23,7 @@ export const USD_VALUE_THRESHOLD = parseFloat(
 );
 
 export const VXDEFI_VALUE_THRESHOLD =
-  BigInt(process.env.VXDEFI_VALUE_THRESHOLD || "100") * BigInt(10 ** 18);
+  BigInt(process.env.VXDEFI_VALUE_THRESHOLD || "1") * BigInt(10 ** 18);
+
+export const XDEFI_VALUE_THRESHOLD =
+  BigInt(process.env.VXDEFI_VALUE_THRESHOLD || "1") * BigInt(10 ** 18);

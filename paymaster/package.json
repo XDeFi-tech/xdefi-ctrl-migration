@@ -1,12 +1,13 @@
 {
   "scripts": {
     "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
-    "test": "vitest run test/*.spec.ts"
+    "test": "vitest run"
   },
   "dependencies": {
     "@aws-sdk/client-kms": "^3.621.0",
     "axios": "^1.7.2",
-    "ethers": "^6.13.1"
+    "ethers": "^6.13.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.141",
