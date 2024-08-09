@@ -22,30 +22,30 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 |                                     |     Min |     Max |     Avg | Calls | usd avg |
 | :---------------------------------- | ------: | ------: | ------: | ----: | ------: |
 | **CtrlTestERC20**                   |         |         |         |       |         |
-|        *transfer*                   |       - |       - |  52,200 |    24 |    0.55 |
+|        *transfer*                   |       - |       - |  52,200 |    24 |    0.41 |
 | **XdefiTestERC20**                  |         |         |         |       |         |
-|        *approve*                    |       - |       - |  46,932 |     6 |    0.49 |
-|        *transfer*                   |  35,675 |  52,787 |  51,876 |    19 |    0.55 |
+|        *approve*                    |       - |       - |  46,932 |     6 |    0.37 |
+|        *transfer*                   |  35,675 |  52,787 |  51,876 |    19 |    0.41 |
 | **XdefiToCtrlMigration**            |         |         |         |       |         |
-|        *migrate*                    |       - |       - | 138,423 |     5 |    1.45 |
-|        *migrateFromVXDEFI*          |       - |       - | 170,406 |     5 |    1.79 |
-|        *migrateGaslessFromVXDEFI*   |       - |       - | 170,952 |     5 |    1.80 |
-|        *migrateWithGaslessApproval* |       - |       - | 139,015 |     5 |    1.46 |
-|        *setTimeLock*                |  28,934 |  46,070 |  37,502 |     2 |    0.39 |
-|        *withdrawNewTokens*          |       - |       - |  44,077 |     1 |    0.46 |
-|        *withdrawOldTokens*          |       - |       - |  44,643 |     1 |    0.47 |
-|        *withdrawPoolTokens*         |       - |       - |  55,222 |     1 |    0.58 |
+|        *migrate*                    |       - |       - | 138,423 |     5 |    1.09 |
+|        *migrateFromVXDEFI*          |       - |       - | 170,406 |     5 |    1.34 |
+|        *migrateGaslessFromVXDEFI*   |       - |       - | 170,952 |     5 |    1.35 |
+|        *migrateWithGaslessApproval* |       - |       - | 139,003 |     5 |    1.09 |
+|        *setTimeLock*                |  28,934 |  46,070 |  37,502 |     2 |    0.30 |
+|        *withdrawNewTokens*          |       - |       - |  44,077 |     1 |    0.35 |
+|        *withdrawOldTokens*          |       - |       - |  44,643 |     1 |    0.35 |
+|        *withdrawPoolTokens*         |       - |       - |  55,222 |     1 |    0.43 |
 | **XDEFIVault**                      |         |         |         |       |         |
-|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    1.19 |
-|        *transfer*                   |       - |       - |  52,178 |     2 |    0.55 |
+|        *deposit*                    | 112,919 | 112,931 | 112,930 |    12 |    0.89 |
+|        *transfer*                   |       - |       - |  52,178 |     2 |    0.41 |
 
 ## Deployments
 |                          | Min | Max  |       Avg | Block % | usd avg |
 | :----------------------- | --: | ---: | --------: | ------: | ------: |
-| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   18.33 |
-| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   26.14 |
-| **XdefiToCtrlMigration** |   - |    - | 1,577,850 |     0 % |   16.58 |
-| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   35.68 |
+| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   13.73 |
+| **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   19.58 |
+| **XdefiToCtrlMigration** |   - |    - | 1,577,850 |     0 % |   12.42 |
+| **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   26.72 |
 
 ## Solidity and Network Config
 | **Settings**        | **Value**             |
@@ -55,8 +55,8 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 | Solidity: runs      | 200                   |
 | Solidity: viaIR     | false                 |
 | Block Limit         | 9,007,199,254,740,991 |
-| L1 Gas Price        | 4 gwei                |
-| Token Price         | 2627.66 usd/eth       |
+| L1 Gas Price        | 3 gwei                |
+| Token Price         | 2623.86 usd/eth       |
 | Network             | ETHEREUM              |
 | Toolchain           | hardhat               |
 
