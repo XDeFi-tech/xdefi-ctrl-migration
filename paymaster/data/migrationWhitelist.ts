@@ -1,6 +1,4 @@
-const allowedAddresses: string[] = [
-  //   "0xe3CA57348c1909A353234c3DaE043abFB434bC16",
-  //   "0xtest",
-];
+const allowedAddresses: string[] = [];
 
+// set of addresses that we allow to migrate gasless bypassing holdders snapshot check
 export const migrationWhitelist = new Set(allowedAddresses);
