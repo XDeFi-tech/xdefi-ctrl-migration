@@ -1,10 +1,7 @@
 import { AppDataSource } from "./db/app-data-source";
-import { buildBalances } from "./hadnlers/buildBalances/buildBalances";
-import { pullEventLogs } from "./hadnlers/pullEventLogs/pullEventLogs";
-import { chainConfig } from "./config";
 import { Chain, Token } from "./types";
 
-import * as fs from "fs";
+import { generateHoldersList } from "./commands/generateHoldersList";
 
 const ethData: Record<string, any> = {};
 export async function main() {
@@ -12,33 +9,7 @@ export async function main() {
 
   const queryRunner = await dataSource.createQueryRunner();
 
-  // const minAmount = 100 * 10 ** 18;
-
-  const data = await queryRunner.manager.query(`
-      SELECT * from holder_balance  WHERE "chain"='ethereum' and "token"='vxdefi' and balance > 0
-    `);
-
-  data.forEach((holderRecord: any) => {
-    ethData[holderRecord.address] = {
-      address: holderRecord.address,
-      balance: holderRecord.balance,
-    };
-  });
-
-  fs.writeFileSync(
-    "vxdefi_holders_ethereum.json",
-    JSON.stringify(ethData, null, 2)
-  );
-
-  // const chains: Chain[] = ["ethereum"];
-  // for (let chain of chains) {
-  //   await buildBalances({
-  //     chain,
-  //     dataSource,
-  //     token: "vxdefi",
-  //   });
-  // }
-
+  // >>>>>>>>>Pull event logs<<<<<<<<<<
   // const chain: Chain = "ethereum";
   // const token: Token = "vxdefi";
   // const config = chainConfig[token][chain];
@@ -49,4 +20,23 @@ export async function main() {
   //   endBlock: config.blockNumberDeployedOn,
   //   token,
   // });
+
+  const chains: Chain[] = ["ethereum", "arbitrum"];
+  const tokens: Token[] = ["xdefi", "vxdefi"];
+
+  // >>>>>>>> Build balances from pulled event logs <<<<<<<<<<<<
+  // for (let chain of chains) {
+  //   await buildBalances({
+  //     chain,
+  //     dataSource,
+  //     token: "vxdefi",
+  //   });
+  // }
+
+  // >>>>>>>>>> generate holders list json file from  balances derived from event logs <<<<<<<<<<<<
+  await generateHoldersList({
+    queryRunner,
+    chain: "ethereum",
+    token: "xdefi",
+  });
 }

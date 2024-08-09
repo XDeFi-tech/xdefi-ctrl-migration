@@ -17,7 +17,7 @@
     "typescript": "^5.5.4"
   },
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "build": "node ./build.js",
     "dev": "esbuild src/index.ts --outfile=index.js --bundle --platform=node --watch --target=es2020"
   }
 }
