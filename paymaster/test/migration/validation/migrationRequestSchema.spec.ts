@@ -19,9 +19,10 @@ describe("migrationRequestSchema", () => {
       deadline: deadlineInpast,
       tokenAddress: XDEFI_TOKEN_ADDRESS,
       r: "0xr",
-      v: "0xv",
+      v: 27,
       s: "0xs",
       user: "0xe3CA57348c1909A353234c3DaE043abFB434bC16",
+      amount: 100n,
     } as zod.infer<typeof migrationRequestSchema>);
 
     const errors = result.error?.flatten();
@@ -39,9 +40,10 @@ describe("migrationRequestSchema", () => {
       deadline,
       tokenAddress: "0xWrongTokenAddress",
       r: "0xr",
-      v: "0xv",
+      v: 27,
       s: "0xs",
       user: "0xe3CA57348c1909A353234c3DaE043abFB434bC16",
+      amount: 100n,
     } as zod.infer<typeof migrationRequestSchema>);
 
     const errors = result.error?.flatten();
@@ -57,9 +59,10 @@ describe("migrationRequestSchema", () => {
       deadline,
       tokenAddress: XDEFI_TOKEN_ADDRESS,
       r: "0xr",
-      v: "0xv",
+      v: 27,
       s: "0xs",
       user: "D4efTZwZbxDeJCZPVakDEbxTz925KFCtuEVWtkbi25em",
+      amount: 100n,
     } as zod.infer<typeof migrationRequestSchema>);
 
     const errors = result.error?.flatten();
@@ -77,9 +80,10 @@ describe("migrationRequestSchema", () => {
       deadline,
       tokenAddress: XDEFI_TOKEN_ADDRESS,
       r: "0xr",
-      v: "0xv",
+      v: 27,
       s: "0xs",
       user: "0xe3CA57348c1909A353234c3DaE043abFB434bC16",
+      amount: 100n,
     } as zod.infer<typeof migrationRequestSchema>);
 
     const errors = result.error?.flatten();

@@ -15,7 +15,7 @@ export const MIGRATION_CONTRACT_ADDRESS =
   "0x83df4Dc89402230b7B6ef7E8a0283CfEd80cDbC0";
 
 export const PROVIDER_RPC_URL =
-  process.env.PROVIDER_RPC_UTL ||
+  process.env.PROVIDER_RPC_URL ||
   "https://eth-sepolia.g.alchemy.com/v2/5mkt3seuOH3k2m8SwCsQDDckTC5jT27e";
 
 export const USD_VALUE_THRESHOLD = parseFloat(
