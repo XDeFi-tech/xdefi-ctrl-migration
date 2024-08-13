@@ -28,20 +28,20 @@ jobs:
         run: npx hardhat coverage --sources XdefiToCtrlMigration.sol
         working-directory: ./migration
 
-      - name: Update README.md
-        run: |
-          npm install -g markdown-include
-          markdown-include markdown.json
-        working-directory: ./migration
+#      - name: Update README.md
+#        run: |
+#          npm install -g markdown-include
+#          markdown-include markdown.json
+#        working-directory: ./migration
 
-      - name: Publish new README.md
-        uses: github-actions-x/commit@v2.9
-        with:
-         github-token: ${{ secrets.GITHUB_TOKEN }}
-         commit-message: 'publish'
-         force-add: 'true'
-         files: migration/README.md migration/gas-report.md
-         name: Hardhat CI
+#      - name: Publish new README.md
+#        uses: github-actions-x/commit@v2.9
+#        with:
+#         github-token: ${{ secrets.GITHUB_TOKEN }}
+#         commit-message: 'publish'
+#         force-add: 'true'
+#         files: migration/README.md migration/gas-report.md
+#         name: Hardhat CI
 
     env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
