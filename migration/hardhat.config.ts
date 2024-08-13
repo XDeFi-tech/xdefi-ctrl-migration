@@ -31,8 +31,7 @@ const config: HardhatUserConfig = {
     L1: "ethereum",
     gasPriceApi: `https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=${ETHERSCAN_API_KEY}`,
     coinmarketcap: COINMARKETCAP_API_KEY,
-    reportFormat: "markdown",
-    outputFile: "gas-report.md",
+    reportFormat: "terminal",
   },
   etherscan: {
     apiKey: {

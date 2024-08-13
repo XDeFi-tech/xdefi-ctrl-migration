@@ -1,0 +1,25 @@
+name: PayMaster CI
+on: [push]
+
+jobs:
+  test:
+    name: Paymaster unit test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./paymaster
+
+      - name: Run XDEFI to CTRL paymaster test
+        run: yarn test
+        working-directory: ./paymaster
