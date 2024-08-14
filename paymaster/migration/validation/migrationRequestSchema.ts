@@ -21,10 +21,11 @@ export const migrationRequestSchema = zod.object({
       message: "Deadline cannot be in past",
     }
   ),
-  v: zod.string(),
+  v: zod.coerce.number(),
   r: zod.string(),
   s: zod.string(),
   tokenAddress: zod.enum([XDEFI_TOKEN_ADDRESS, VXDEFI_TOKEN_ADDRESS], {
     message: "Wrong token address",
   }),
+  amount: zod.coerce.bigint(),
 });

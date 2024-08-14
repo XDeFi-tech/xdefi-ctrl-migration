@@ -17,6 +17,14 @@ Globals:
   Api:
     TracingEnabled: true
 Resources:
+  MigrateXdefiApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'content-type'"
+        AllowOrigin: "'*'"
   MigrateXdefiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -30,6 +38,8 @@ Resources:
         MigrateXdefi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
+            RestApiId:
+              Ref: MigrateXdefiApi
             Path: /migrate
             Method: post
     Metadata: # Manage esbuild properties

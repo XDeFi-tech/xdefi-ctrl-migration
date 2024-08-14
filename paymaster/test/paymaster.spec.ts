@@ -48,10 +48,11 @@ describe("Paymaster handler", () => {
     const requestBody = {
       deadline: Math.floor(Date.now() / 1000) + 60 * 60,
       user,
-      v: "0xv",
+      v: 27,
       s: "0xs",
       r: "0xr",
       tokenAddress: "0xXdefiTokenAddress",
+      amount: "10",
     };
     const event = {
       body: JSON.stringify(requestBody),
@@ -67,7 +68,7 @@ describe("Paymaster handler", () => {
       >
     ).mockReturnValueOnce({
       success: true,
-      data: requestBody,
+      data: requestBody as any,
     });
 
     (
@@ -96,7 +97,7 @@ describe("Paymaster handler", () => {
     const requestBody = {
       deadline: Math.floor(Date.now() / 1000) + 60 * 60,
       user,
-      v: "0xv",
+      v: 27,
       s: "0xs",
       r: "0xr",
       tokenAddress: "0xXdefiTokenAddress",
@@ -153,10 +154,11 @@ describe("Paymaster handler", () => {
     const requestBody = {
       deadline: Math.floor(Date.now() / 1000) + 60 * 60,
       user,
-      v: "0xv",
+      v: 27,
       s: "0xs",
       r: "0xr",
       tokenAddress: "0xXdefiTokenAddress",
+      amount: "10",
     };
     const event = {
       body: JSON.stringify(requestBody),
@@ -173,7 +175,7 @@ describe("Paymaster handler", () => {
       >
     ).mockReturnValueOnce({
       success: true,
-      data: requestBody,
+      data: requestBody as any,
     });
 
     (
@@ -202,10 +204,11 @@ describe("Paymaster handler", () => {
     const requestBody = {
       deadline: Math.floor(Date.now() / 1000) + 60 * 60,
       user,
-      v: "0xv",
+      v: 27,
       s: "0xs",
       r: "0xr",
       tokenAddress: "0xXdefiTokenAddress",
+      amount: "100",
     };
     const event = {
       body: JSON.stringify(requestBody),
@@ -222,7 +225,7 @@ describe("Paymaster handler", () => {
       >
     ).mockReturnValueOnce({
       success: true,
-      data: requestBody,
+      data: requestBody as any,
     });
 
     (
@@ -253,10 +256,11 @@ describe("Paymaster handler", () => {
     const requestBody = {
       deadline: Math.floor(Date.now() / 1000) + 60 * 60,
       user,
-      v: "0xv",
+      v: 27,
       s: "0xs",
       r: "0xr",
       tokenAddress: "0xXdefiTokenAddress",
+      amount: "100",
     };
     const event = {
       body: JSON.stringify(requestBody),
@@ -268,7 +272,7 @@ describe("Paymaster handler", () => {
       >
     ).mockReturnValueOnce({
       success: true,
-      data: requestBody,
+      data: requestBody as any,
     });
 
     (getTokenHolding as Mock<typeof getTokenHolding>).mockReturnValueOnce({
@@ -282,7 +286,7 @@ describe("Paymaster handler", () => {
       >
     ).mockReturnValueOnce({
       success: true,
-      data: requestBody,
+      data: requestBody as any,
     });
 
     (
