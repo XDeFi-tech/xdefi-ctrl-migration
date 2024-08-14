@@ -4,7 +4,7 @@ in order to run on localhost you will need aws command line unility called `sam`
 
 ## run on localhost
 
-###run aws lambda first
+### run aws lambda first
 
 ```
 cd /path/to/repo/root
@@ -15,7 +15,7 @@ sam local start-api
 
 you will need docker installed and running for sam.
 
-###launch FE
+### launch FE
 
 copy `.env.sample` and rename copy to `.env`
 you will need to enter mnemonic for VITE_CLIENT_WALLET_MNEMONIC env var.
