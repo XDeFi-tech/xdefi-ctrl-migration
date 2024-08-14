@@ -7,7 +7,7 @@ import { migrationRequestSchema } from "./migration/validation/migrationRequestS
 const headers = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Origin": "*", // Allow from anywhere
-  "Access-Control-Allow-Methods": "POST", // Allow only GET request
+  "Access-Control-Allow-Methods": "POST", // Allow only POST request
 };
 
 export const handler = async (
