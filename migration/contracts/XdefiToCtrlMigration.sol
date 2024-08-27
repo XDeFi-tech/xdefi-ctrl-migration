@@ -60,7 +60,7 @@ contract XdefiToCtrlMigration is Ownable {
      */
     function migrate(uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve oldToken with EIP-2612
-        try IERC20Permit(address(oldToken)).permit(msg.sender, address(this), amount, deadline, v, r, s) {} catch {};
+        try IERC20Permit(address(oldToken)).permit(msg.sender, address(this), amount, deadline, v, r, s) {} catch {}
 
         // Transfer old tokens from the user to this contract
         oldToken.safeTransferFrom(msg.sender, address(this), amount);
@@ -82,7 +82,7 @@ contract XdefiToCtrlMigration is Ownable {
      */
     function migrateWithGaslessApproval(address user, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve oldToken with EIP-2612 on behalf of the user
-        try IERC20Permit(address(oldToken)).permit(user, address(this), amount, deadline, v, r, s) {} catch {};
+        try IERC20Permit(address(oldToken)).permit(user, address(this), amount, deadline, v, r, s) {} catch {}
 
         // Transfer old tokens from the user to this contract
         oldToken.safeTransferFrom(user, address(this), amount);
@@ -103,7 +103,7 @@ contract XdefiToCtrlMigration is Ownable {
      */
     function migrateFromVXDEFI(uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve vXDEFI with EIP-2612
-        try IERC20Permit(address(poolToken)).permit(msg.sender, address(this), shares, deadline, v, r, s) {} catch {};
+        try IERC20Permit(address(poolToken)).permit(msg.sender, address(this), shares, deadline, v, r, s) {} catch {}
 
         // Transfer vXDEFI tokens from the user to this contract
         poolToken.transferFrom(msg.sender, address(this), shares);
@@ -128,7 +128,7 @@ contract XdefiToCtrlMigration is Ownable {
      */
     function migrateGaslessFromVXDEFI(address user, uint256 shares, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external timeLock {
         // Approve vXDEFI with EIP-2612 on behalf of the user
-        try IERC20Permit(address(poolToken)).permit(user, address(this), shares, deadline, v, r, s) {} catch {};
+        try IERC20Permit(address(poolToken)).permit(user, address(this), shares, deadline, v, r, s) {} catch {}
 
         // Transfer vXDEFI tokens from the user to this contract
         poolToken.transferFrom(user, address(this), shares);
