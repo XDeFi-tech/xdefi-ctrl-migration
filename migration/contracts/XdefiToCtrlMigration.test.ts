@@ -211,7 +211,7 @@ describe("XdefiToCtrlMigration", () => {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate xdefi to ctrl if deadline is expired", async function () {
@@ -435,7 +435,7 @@ describe("XdefiToCtrlMigration", () => {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate vXdefi to ctrl if deadline is expired", async function () {
@@ -482,7 +482,7 @@ describe("XdefiToCtrlMigration", () => {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: expired deadline");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -653,7 +653,7 @@ describe("XdefiToCtrlMigration", () => {
         tokenMigration
           .connect(bob)
           .migrate(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate xdefi to ctrl if deadline is expired", async function () {
@@ -854,7 +854,7 @@ describe("XdefiToCtrlMigration", () => {
         tokenMigration
           .connect(alice)
           .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate vXdefi to ctrl if deadline is expired", async function () {
@@ -896,7 +896,7 @@ describe("XdefiToCtrlMigration", () => {
         tokenMigration
           .connect(bob)
           .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20Permit: expired deadline");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner

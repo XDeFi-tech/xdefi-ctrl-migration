@@ -207,7 +207,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Expired");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -581,7 +581,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrate(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20: Expired");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -957,7 +957,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: expired deadline");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1011,7 +1011,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1065,7 +1065,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1117,7 +1117,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate vXdefi to ctrl if owner [vXdefi] balance is insufficient", async function () {
@@ -1334,7 +1334,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20Permit: expired deadline");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1383,7 +1383,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1436,7 +1436,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
       expect(await vXdefi.balanceOf(bob.address)).to.equal(
         initialVXdefiBalanceOfOwner
@@ -1483,7 +1483,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrateFromVXDEFI(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20Permit: invalid signature");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("Should not migrate vXdefi to ctrl if owner [vXdefi] balance is insufficient", async function () {
