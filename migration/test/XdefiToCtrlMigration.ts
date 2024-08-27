@@ -263,7 +263,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -320,7 +320,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -374,7 +374,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
     });
 
     it("Should not migrate xdefi to ctrl if owner [xdefi] balance is insufficient", async function () {
@@ -632,7 +632,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrate(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -688,7 +688,7 @@ describe("XdefiToCtrlMigration", function () {
           r,
           s
         )
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
 
       expect(await xdefi.balanceOf(owner)).to.equal(balanceOfOwner);
       expect(await ctrl.balanceOf(owner)).to.equal(0);
@@ -737,7 +737,7 @@ describe("XdefiToCtrlMigration", function () {
         tokenMigration
           .connect(bob)
           .migrate(message.value, message.deadline, v, r, s)
-      ).to.be.revertedWith("ERC20: Invalid Signature");
+      ).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
     });
 
     it("Should not migrate xdefi to ctrl if owner [xdefi] balance is insufficient", async function () {
