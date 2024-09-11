@@ -23,11 +23,11 @@ describe("XdefiToCtrlMigration", function () {
     );
 
     // Deploy the Ctrl ERC20 token contract
-    const CtrlTestERC20 = await hre.ethers.getContractFactory(
-      "CtrlTestERC20",
+    const CtrlERC20 = await hre.ethers.getContractFactory(
+      "CtrlERC20",
       creator
     );
-    const ctrl = await CtrlTestERC20.deploy("Ctrl", "CTRL");
+    const ctrl = await CtrlERC20.deploy("Ctrl", "CTRL");
 
     // Deploy the vXDEFI ERC4626 token contract
     const XDEFIVault = await hre.ethers.getContractFactory(

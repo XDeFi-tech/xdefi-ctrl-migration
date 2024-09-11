@@ -21,7 +21,7 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 
 |                                     |     Min |     Max |     Avg | Calls | usd avg |
 | :---------------------------------- | ------: | ------: | ------: | ----: | ------: |
-| **CtrlTestERC20**                   |         |         |         |       |         |
+| **CtrlERC20**                   |         |         |         |       |         |
 |        *transfer*                   |       - |       - |  52,200 |    24 |    0.94 |
 | **XdefiTestERC20**                  |         |         |         |       |         |
 |        *approve*                    |       - |       - |  46,932 |     6 |    0.85 |
@@ -42,7 +42,7 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ## Deployments
 |                          | Min | Max  |       Avg | Block % | usd avg |
 | :----------------------- | --: | ---: | --------: | ------: | ------: |
-| **CtrlTestERC20**        |   - |    - | 1,744,339 |     0 % |   31.49 |
+| **CtrlERC20**        |   - |    - | 1,744,339 |     0 % |   31.49 |
 | **XdefiTestERC20**       |   - |    - | 2,486,975 |     0 % |   44.89 |
 | **XdefiToCtrlMigration** |   - |    - | 1,577,850 |     0 % |   28.48 |
 | **XDEFIVault**           |   - |    - | 3,395,066 |     0 % |   61.29 |

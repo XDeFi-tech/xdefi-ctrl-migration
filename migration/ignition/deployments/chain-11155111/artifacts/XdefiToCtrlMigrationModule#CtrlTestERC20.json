@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "CtrlTestERC20",
-  "sourceName": "contracts/CtrlTestERC20.sol",
+  "contractName": "CtrlERC20",
+  "sourceName": "contracts/CtrlERC20.sol",
   "abi": [
     {
       "inputs": [
