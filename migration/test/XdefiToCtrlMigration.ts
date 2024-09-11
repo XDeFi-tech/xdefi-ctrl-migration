@@ -23,10 +23,7 @@ describe("XdefiToCtrlMigration", function () {
     );
 
     // Deploy the Ctrl ERC20 token contract
-    const CtrlERC20 = await hre.ethers.getContractFactory(
-      "CtrlERC20",
-      creator
-    );
+    const CtrlERC20 = await hre.ethers.getContractFactory("CtrlERC20", creator);
     const ctrl = await CtrlERC20.deploy("Ctrl", "CTRL");
 
     // Deploy the vXDEFI ERC4626 token contract
@@ -76,7 +73,9 @@ describe("XdefiToCtrlMigration", function () {
 
       // Check initial token balances
       expect(await xdefi.balanceOf(owner)).to.equal(BigInt(500 * 1e18));
-      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(240_000_000 * 1e18));
+      expect(await ctrl.balanceOf(owner)).to.equal(
+        BigInt(240_000_000) * BigInt(1e18)
+      );
 
       // Check the contract addresses for xdefi, ctrl, and vXdefi
       expect(await tokenMigration.oldToken()).to.equal(
