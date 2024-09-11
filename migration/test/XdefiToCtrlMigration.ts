@@ -76,7 +76,7 @@ describe("XdefiToCtrlMigration", function () {
 
       // Check initial token balances
       expect(await xdefi.balanceOf(owner)).to.equal(BigInt(500 * 1e18));
-      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(500 * 1e18));
+      expect(await ctrl.balanceOf(owner)).to.equal(BigInt(240_000_000 * 1e18));
 
       // Check the contract addresses for xdefi, ctrl, and vXdefi
       expect(await tokenMigration.oldToken()).to.equal(
