@@ -13,7 +13,7 @@ describe("XdefiToCtrlMigration", () => {
 
   async function loadCtrlContract() {
     const ctrl = await hre.ethers.getContractAt(
-      "CtrlTestERC20",
+      "CtrlERC20",
       "0x3A1ccBF76c9649DD3C57A0f641658678B30af1E5"
     );
     return ctrl;
