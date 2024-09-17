@@ -31,6 +31,7 @@ vi.mock("../config/config.ts", () => ({
   PROVIDER_RPC_URL: "https://localhost/test",
   MIGRATION_CONTRACT_ADDRESS: "0xMigrationContractAddress",
   XDEFI_VALUE_THRESHOLD: 10n * 10n ** 18n,
+  WHITELISTED_ADDRESS: [],
 }));
 
 vi.mock("../migration/getMnemonic.ts", () => ({

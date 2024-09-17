@@ -9,6 +9,7 @@ vi.mock("../../../config/config.ts", () => ({
   PROVIDER_RPC_URL: "https://localhost/test",
   MIGRATION_CONTRACT_ADDRESS: "0xMigrationContractAddress",
   USD_VALUE_THRESHOLD: 100,
+  WHITELISTED_ADDRESS: [],
 }));
 
 describe("migrationRequestSchema", () => {
