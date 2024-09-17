@@ -27,3 +27,18 @@ export const VXDEFI_VALUE_THRESHOLD =
 
 export const XDEFI_VALUE_THRESHOLD =
   BigInt(process.env.VXDEFI_VALUE_THRESHOLD || "1") * BigInt(10 ** 18);
+
+export const WHITELISTED_ADDRESS: string[] = (() => {
+  let WHITELISTED: string[];
+
+  try {
+    WHITELISTED = process.env.WHITELISTED_ADDRESS
+      ? JSON.parse(process.env.WHITELISTED_ADDRESS)
+      : [];
+  } catch (error) {
+    console.error("Failed to parse WHITELISTED_ADDRESS:", error);
+    WHITELISTED = [];
+  }
+
+  return WHITELISTED.map((address) => address.toLowerCase());
+})();
