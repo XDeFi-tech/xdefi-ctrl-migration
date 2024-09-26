@@ -9,9 +9,17 @@ import {
 } from "../migration/MigrationContext";
 import { XDEFI_VALUE_THRESHOLD } from "../config/config";
 import { migrationRequestSchema } from "../migration/validation/migrationRequestSchema";
+import { isAlreadyMigrated } from "../migration/validation/isAlreadyMigrated";
+import { saveMigrationRecord } from "../migration/saveMigrationRecord";
 
 vi.mock("../migration/MigrationContext.ts", () => ({
-  getMigrationContext: vi.fn(),
+  getMigrationContext: vi.fn().mockResolvedValue({
+    dataSource: {
+      createQueryRunner: vi
+        .fn()
+        .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+    },
+  }),
   initMigrationContext: vi.fn(),
 }));
 
@@ -19,6 +27,23 @@ vi.mock("../migration/validation/migrationRequestSchema.ts", () => ({
   migrationRequestSchema: {
     safeParse: vi.fn(),
   },
+}));
+
+vi.mock("../db/paymaster-data-source.ts", () => ({
+  PaymasterDataSource: {
+    initialize: vi.fn(),
+    createQueryRunner: vi
+      .fn()
+      .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+  },
+}));
+
+vi.mock("../migration/validation/isAlreadyMigrated", () => ({
+  isAlreadyMigrated: vi.fn().mockResolvedValue(false),
+}));
+
+vi.mock("../migration/saveMigrationRecord", () => ({
+  saveMigrationRecord: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("../migration/getTokenHolding.ts", () => ({
@@ -82,6 +107,11 @@ describe("Paymaster handler", () => {
         },
         provider: vi.fn(),
         wallet: vi.fn(),
+        dataSource: {
+          createQueryRunner: vi
+            .fn()
+            .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+        },
       } as any as MigrationContext);
     });
 
@@ -138,6 +168,11 @@ describe("Paymaster handler", () => {
         },
         provider: vi.fn(),
         wallet: vi.fn(),
+        dataSource: {
+          createQueryRunner: vi
+            .fn()
+            .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+        },
       } as any as MigrationContext);
     });
 
@@ -189,6 +224,11 @@ describe("Paymaster handler", () => {
         },
         provider: vi.fn(),
         wallet: vi.fn(),
+        dataSource: {
+          createQueryRunner: vi
+            .fn()
+            .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+        },
       } as any as MigrationContext);
     });
 
@@ -243,6 +283,11 @@ describe("Paymaster handler", () => {
         },
         provider: vi.fn(),
         wallet: vi.fn(),
+        dataSource: {
+          createQueryRunner: vi
+            .fn()
+            .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+        },
       } as any as MigrationContext);
     });
 
@@ -304,6 +349,11 @@ describe("Paymaster handler", () => {
         },
         provider: vi.fn(),
         wallet: vi.fn(),
+        dataSource: {
+          createQueryRunner: vi
+            .fn()
+            .mockReturnValue({ release: vi.fn().mockResolvedValue(undefined) }),
+        },
       } as any as MigrationContext);
     });
 

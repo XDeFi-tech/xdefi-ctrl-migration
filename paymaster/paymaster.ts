@@ -3,6 +3,8 @@ import { migrateGaslessFrom } from "./migration/migrateGasless";
 import { getMigrationContext } from "./migration/MigrationContext";
 import { isMigrationAllowed } from "./migration/validation/isMigrationAllowed";
 import { migrationRequestSchema } from "./migration/validation/migrationRequestSchema";
+import { isAlreadyMigrated } from "./migration/validation/isAlreadyMigrated";
+import { saveMigrationRecord } from "./migration/saveMigrationRecord";
 
 const headers = {
   "Access-Control-Allow-Headers": "Content-Type",
@@ -34,6 +36,8 @@ export const handler = async (
 
     const migrationContext = await getMigrationContext();
 
+    const queryRunner = migrationContext.dataSource.createQueryRunner();
+
     const [isAllowed, message] = await isMigrationAllowed(migrationContext, {
       user,
       tokenAddress,
@@ -45,6 +49,21 @@ export const handler = async (
         headers,
         body: JSON.stringify({
           message,
+        }),
+      };
+    }
+
+    const isMigratedBefore = await isAlreadyMigrated(queryRunner, {
+      user,
+      tokenAddress,
+    });
+
+    if (isMigratedBefore) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          message: `address ${user} alreasy performed migration of ${tokenAddress} token`,
         }),
       };
     }
@@ -73,6 +92,18 @@ export const handler = async (
     });
 
     const receipt = await tx.wait();
+
+    try {
+      await saveMigrationRecord(queryRunner, {
+        user,
+        tokenAddress,
+        txHash: receipt?.hash || "",
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await queryRunner.release();
+    }
 
     return {
       statusCode: 200,
