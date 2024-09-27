@@ -26,6 +26,7 @@ export const handler = async (
         body: JSON.stringify({
           message: "Request validation failed",
           fieldErrors: result.error.flatten().fieldErrors,
+          canRetry: true,
         }),
       };
     }
@@ -45,6 +46,7 @@ export const handler = async (
         headers,
         body: JSON.stringify({
           message,
+          canRetry: false,
         }),
       };
     }
@@ -59,6 +61,7 @@ export const handler = async (
         headers,
         body: JSON.stringify({
           message: `Requested migration balance is less than actual balance. Requested: ${amount}. Actual: ${userAmount}`,
+          canRetry: true,
         }),
       };
     }
@@ -84,11 +87,12 @@ export const handler = async (
   } catch (e: any) {
     console.error(e);
     return {
-      statusCode: 400,
+      statusCode: 500,
       headers,
       body: JSON.stringify({
         message:
           "Failed to perform migration. Please try again later or contact support.",
+        canRetry: true,
       }),
     };
   }
