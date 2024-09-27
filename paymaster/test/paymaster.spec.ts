@@ -309,7 +309,7 @@ describe("Paymaster handler", () => {
 
     const response = await handler(event, {} as any);
 
-    expect(response.statusCode).equals(400);
+    expect(response.statusCode).equals(500);
     expect(JSON.parse(response.body).message).equals(
       "Failed to perform migration. Please try again later or contact support."
     );
