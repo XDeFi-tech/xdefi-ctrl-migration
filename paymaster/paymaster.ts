@@ -10,6 +10,15 @@ const headers = {
   "Access-Control-Allow-Methods": "POST", // Allow only POST request
 };
 
+const waitWithTimeout = (promise: Promise<any>, timeoutMs: number) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), timeoutMs)
+    ),
+  ]);
+};
+
 export const handler = async (
   event: APIGatewayEvent,
   context: Context
@@ -75,15 +84,30 @@ export const handler = async (
       s,
     });
 
-    const receipt = await tx.wait();
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        txHash: receipt?.hash,
-      }),
-    };
+    try {
+      // Wait for the transaction to be mined with a 30-second timeout
+      const receipt = await waitWithTimeout(tx.wait(), 30000);
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          txHash: receipt?.transactionHash,
+        }),
+      };
+    } catch (e: any) {
+      if (e.message === "timeout") {
+        // If timeout occurs, return the transaction hash without waiting for confirmation
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            txHash: tx.hash,
+            message: "Transaction is still pending. Please check later for confirmation.",
+          }),
+        };
+      }
+      throw e; // Rethrow the error if it's not a timeout
+    }
   } catch (e: any) {
     console.error(e);
     return {
