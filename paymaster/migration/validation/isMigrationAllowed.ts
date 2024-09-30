@@ -43,13 +43,18 @@ export async function isXdefiMigrationAllowed(
   ctx: MigrationContext,
   user: string
 ) {
-  const holding = getTokenHolding(XDEFI_TOKEN_ADDRESS, user);
+  // const holding = getTokenHolding(XDEFI_TOKEN_ADDRESS, user);
+  // const balance = BigInt(holding?.balance || "0");
+  // if (!holding) {
+  //   // const holding = getTokenHolding(XDEFI_TOKEN_ADDRESS, user);
 
-  if (!holding) {
-    return [false, `address ${user} missing on token holders list`];
-  }
+  //   return [false, `address ${user} missing on token holders list`];
+  // }
+  /***uncomment ^^^^above^^^^ if check against  holders list is required */
 
-  const isAllowed = BigInt(holding.balance) >= XDEFI_VALUE_THRESHOLD;
+  const balance = (await ctx.xdefiContract.balanceOf(user)) as bigint;
+
+  const isAllowed = balance >= XDEFI_VALUE_THRESHOLD;
 
   const message = isAllowed
     ? ""
@@ -64,14 +69,16 @@ export async function isVXdefiMigrationAllowed(
   ctx: MigrationContext,
   user: string
 ) {
-  const holding = getTokenHolding(VXDEFI_TOKEN_ADDRESS, user);
+  // const holding = getTokenHolding(VXDEFI_TOKEN_ADDRESS, user);
 
-  if (!holding) {
-    return [false, `address ${user} missing on token holders list`];
-  }
+  // if (!holding) {
+  //   return [false, `address ${user} missing on token holders list`];
+  // }
 
-  const balance = BigInt(holding.balance || 0);
+  // const balance = BigInt(holding.balance || 0);
+  /***uncomment ^^^^above^^^^ if check against  holders list is required */
 
+  const balance = (await ctx.vXdefiContract.balanceOf(user)) as bigint;
   const isAllowed = balance >= VXDEFI_VALUE_THRESHOLD;
 
   const message = isAllowed

@@ -3,6 +3,7 @@ import { migrateGaslessFrom } from "./migration/migrateGasless";
 import { getMigrationContext } from "./migration/MigrationContext";
 import { isMigrationAllowed } from "./migration/validation/isMigrationAllowed";
 import { migrationRequestSchema } from "./migration/validation/migrationRequestSchema";
+import { resolveWithTimeout } from "./migration/utils";
 
 const headers = {
   "Access-Control-Allow-Headers": "Content-Type",
@@ -51,9 +52,9 @@ export const handler = async (
       };
     }
 
-    const userAmount = (await migrationContext.xdefiContract.balanceOf(
-      user
-    )) as bigint;
+    const tokenContract = migrationContext.getTokenContract(tokenAddress);
+
+    const userAmount = (await tokenContract.balanceOf(user)) as bigint;
 
     if (userAmount < amount) {
       return {
@@ -75,13 +76,29 @@ export const handler = async (
       s,
     });
 
-    const receipt = await tx.wait();
+    const maybeReceipt = await Promise.race([
+      tx.wait(),
+      resolveWithTimeout("timedOut" as const, 29000),
+    ]);
+
+    if (maybeReceipt === "timedOut") {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          txHash: tx.hash,
+          timedOut: true,
+          message:
+            "Transaction is still pending. Please check later for confirmation.",
+        }),
+      };
+    }
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        txHash: receipt?.hash,
+        txHash: maybeReceipt?.hash,
       }),
     };
   } catch (e: any) {
