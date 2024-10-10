@@ -8,6 +8,8 @@ import {
 import { xdefiToCtrlMigrationAbi } from "../data/abi/xdefiToCtrlMigrationAbi";
 import { erc20Abi } from "../data/abi/erc20Abi";
 import { getMnemonic } from "./getMnemonic";
+import { PaymasterDataSource } from "../db/paymaster-data-source";
+import { DataSource } from "typeorm";
 
 export type MigrationContext = {
   migrationContract: Contract;
@@ -15,6 +17,7 @@ export type MigrationContext = {
   vXdefiContract: Contract;
   provider: JsonRpcProvider;
   wallet: Wallet;
+  dataSource: DataSource;
   getTokenContract: (tokenAddress: string) => Contract;
 };
 
@@ -24,6 +27,7 @@ async function createMigrationContext(): Promise<MigrationContext> {
   const provider = new JsonRpcProvider(PROVIDER_RPC_URL);
 
   const mnemonic = await getMnemonic();
+  const dataSource = await PaymasterDataSource.initialize();
   const wallet = new Wallet(Wallet.fromPhrase(mnemonic).privateKey, provider);
 
   const migrationContract = new Contract(
@@ -42,6 +46,7 @@ async function createMigrationContext(): Promise<MigrationContext> {
     vXdefiContract,
     provider,
     wallet,
+    dataSource,
     getTokenContract(tokenAddress) {
       switch (tokenAddress.toLowerCase()) {
         case XDEFI_TOKEN_ADDRESS.toLowerCase():

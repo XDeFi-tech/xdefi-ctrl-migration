@@ -3,6 +3,8 @@ import { migrateGaslessFrom } from "./migration/migrateGasless";
 import { getMigrationContext } from "./migration/MigrationContext";
 import { isMigrationAllowed } from "./migration/validation/isMigrationAllowed";
 import { migrationRequestSchema } from "./migration/validation/migrationRequestSchema";
+import { isAlreadyMigrated } from "./migration/validation/isAlreadyMigrated";
+import { saveMigrationRecord } from "./migration/saveMigrationRecord";
 import { resolveWithTimeout } from "./migration/utils";
 
 const headers = {
@@ -36,6 +38,8 @@ export const handler = async (
 
     const migrationContext = await getMigrationContext();
 
+    const queryRunner = migrationContext.dataSource.createQueryRunner();
+
     const [isAllowed, message] = await isMigrationAllowed(migrationContext, {
       user,
       tokenAddress,
@@ -48,6 +52,21 @@ export const handler = async (
         body: JSON.stringify({
           message,
           canRetry: false,
+        }),
+      };
+    }
+
+    const isMigratedBefore = await isAlreadyMigrated(queryRunner, {
+      user,
+      tokenAddress,
+    });
+
+    if (isMigratedBefore) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          message: `address ${user} alreasy performed migration of ${tokenAddress} token`,
         }),
       };
     }
@@ -92,6 +111,18 @@ export const handler = async (
             "Transaction is still pending. Please check later for confirmation.",
         }),
       };
+    }
+
+    try {
+      await saveMigrationRecord(queryRunner, {
+        user,
+        tokenAddress,
+        txHash: maybeReceipt?.hash || "",
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await queryRunner.release();
     }
 
     return {

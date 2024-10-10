@@ -7,6 +7,8 @@
     "@aws-sdk/client-kms": "^3.621.0",
     "axios": "^1.7.4",
     "ethers": "^6.13.1",
+    "pg": "^8.13.0",
+    "typeorm": "^0.3.20",
     "zod": "^3.23.8"
   },
   "devDependencies": {
