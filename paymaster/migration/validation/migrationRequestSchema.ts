@@ -3,6 +3,11 @@ import { VXDEFI_TOKEN_ADDRESS, XDEFI_TOKEN_ADDRESS } from "../../config/config";
 
 const getUnixTimestampNow = () => Math.floor(Date.now() / 1000);
 
+const ALLOWED_TOKENS = [
+  XDEFI_TOKEN_ADDRESS.toLowerCase(),
+  VXDEFI_TOKEN_ADDRESS.toLowerCase(),
+];
+
 export const migrationRequestSchema = zod.object({
   user: zod.string().refine(
     (addr) => {
@@ -24,8 +29,13 @@ export const migrationRequestSchema = zod.object({
   v: zod.coerce.number(),
   r: zod.string(),
   s: zod.string(),
-  tokenAddress: zod.enum([XDEFI_TOKEN_ADDRESS, VXDEFI_TOKEN_ADDRESS], {
-    message: "Wrong token address",
-  }),
+  tokenAddress: zod.string().refine(
+    (tokenAddress) => {
+      return ALLOWED_TOKENS.includes(tokenAddress.toLowerCase());
+    },
+    {
+      message: "Wrong token address",
+    }
+  ),
   amount: zod.coerce.bigint(),
 });
