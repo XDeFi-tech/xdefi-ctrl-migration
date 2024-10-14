@@ -27,11 +27,11 @@ export async function isMigrationAllowed(
     return [true, ""];
   }
 
-  switch (tokenAddress) {
-    case VXDEFI_TOKEN_ADDRESS:
+  switch (tokenAddress.toLowerCase()) {
+    case VXDEFI_TOKEN_ADDRESS.toLowerCase():
       return isVXdefiMigrationAllowed(ctx, user);
 
-    case XDEFI_TOKEN_ADDRESS:
+    case XDEFI_TOKEN_ADDRESS.toLowerCase():
       return isXdefiMigrationAllowed(ctx, user);
 
     default:
