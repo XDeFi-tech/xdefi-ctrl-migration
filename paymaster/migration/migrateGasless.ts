@@ -23,8 +23,8 @@ export async function migrateGaslessFrom(
   tokenAddress: string,
   { user, deadline, amount, v, r, s }: MigrateFromParams
 ): Promise<TransactionResponse> {
-  switch (tokenAddress) {
-    case XDEFI_TOKEN_ADDRESS: {
+  switch (tokenAddress.toLowerCase()) {
+    case XDEFI_TOKEN_ADDRESS.toLowerCase(): {
       return await ctx.migrationContract.migrateWithGaslessApproval(
         user,
         amount,
@@ -34,7 +34,7 @@ export async function migrateGaslessFrom(
         s
       );
     }
-    case VXDEFI_TOKEN_ADDRESS: {
+    case VXDEFI_TOKEN_ADDRESS.toLowerCase(): {
       return await ctx.migrationContract.migrateGaslessFromVXDEFI(
         user,
         amount,
